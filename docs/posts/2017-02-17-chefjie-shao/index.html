@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="author" content="Sean Guo">
+    <meta name="description" content="Sean Guo&#39;s personal website">
+    <meta name="keywords" content="blog,developer,personal">
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Chef 介绍 Part1 Setup"/>
+<meta name="twitter:description" content="引言 Chef是一个自动化部署的工具。它的思想是“Infrastructure as code”, 所以整个DevOps流程下来都是代码，都可以保存在代码仓库里面。像Chef之类的工具出现之前，简单部署的话就是手工来了，像Java的web应用手工部署个War包或者改个配置文件什么的，高级点的可能会写个shell脚本来自动化。但是当需要管理的机器增多或者配置项增多，或者不同的机器要求不一样的配置的话，就力不从心了。Chef出现之后，这样的难题就迎刃而解了。
+Chef的实现是用的Ruby，所以它的配置脚本也是基于Ruby的, 所以想要学好Chef也需要了解一下Ruby的基本语法，如果想要扩展，定制，增加自己的Chef库的话，还是需要仔细学习一下Ruby才行。这导致Chef陡峭的学习曲线，了解个皮毛很容易，但是想要深入了解，诊断问题的话需要做很多功课才可以。
+想要学好，我们先搭环境，在应用中学习是最有成效的。
+安装 Chef安装很简单，就去下载一个叫做Chef DK的包安装就可以了。这个会把Chef全家桶装好，里面开发测试用的所有工具都包含了。
+安装完后可以运行下面的命令检查一下 ➜ ~ chef-solo -v Chef: 12.17.44
+第一个程序 我们可以通过下面的命令来创建我们的第一个Chef程序(它叫Cookbook) chef generate cookbook sample1
+下面是这个cookbook的目录结构: . ├── Berksfile ├── README.md ├── chefignore ├── metadata.rb ├── recipes │ └── default.rb ├── spec │ ├── spec_helper.rb │ └── unit │ └── recipes │ └── default_spec.rb ├── test │ └── smoke │ └── default │ └── default_test.rb
+简单来说Chef的运行是顺序执行一个一个的Resource，Chef在Ruby语法的基础上封装了自己的DSL来把经常用到的命令，配置文件的管理等抽象成一个个的Resource。这些Resource根据需求顺序放在Chef的脚本里（它叫Recipe）就可以执行了。所以Chef的入口是Recipe，下面是一个简单的例子。
+file &#39;/tmp/test.txt&#39; do content &#39;This is myfirst sample&#39; mode &#39;0755&#39; end 这个主代码块我们要放到recipes/default."/>
+
+
+    <base href="https://seanguo.github.io/posts/2017-02-17-chefjie-shao/">
+    <title>
+  Chef 介绍 Part1 Setup · Sean&#39;s Blog
+</title>
+
+    <link rel="canonical" href="https://seanguo.github.io/posts/2017-02-17-chefjie-shao/">
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700|Merriweather:300,700|Source+Code+Pro:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css" integrity="sha256-oSrCnRYXvHG31SBifqP2PM1uje7SJUyX0nTwO2RJV54=" crossorigin="anonymous" />
+
+    
+      
+      
+      <link rel="stylesheet" href="https://seanguo.github.io/css/coder.min.8881182b3ec36ffd9c735306f7e16ce9b1129ebc650e069e7c4114827e9d9b23.css" integrity="sha256-iIEYKz7Db/2cc1MG9&#43;Fs6bESnrxlDgaefEEUgn6dmyM=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+
+    
+      <link rel="stylesheet" href="https://seanguo.github.io/css/custom.css">
+    
+
+    <link rel="icon" type="image/png" href="https://seanguo.github.io/img/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://seanguo.github.io/img/favicon-16x16.png" sizes="16x16">
+
+    
+
+    <meta name="generator" content="Hugo 0.54.0" />
+  </head>
+
+  <body class=" ">
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="https://seanguo.github.io">
+      Sean&#39;s Blog
+    </a>
+    <input type="checkbox" id="menu-toggle" />
+    <label class="menu-button float-right" for="menu-toggle"><i class="fas fa-bars"></i></label>
+    <ul class="navigation-list">
+      
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://seanguo.github.io/posts/">Blog</a>
+          </li>
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://seanguo.github.io/about/">About</a>
+          </li>
+        
+      
+      
+    </ul>
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">Chef 介绍 Part1 Setup</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2017-02-17T20:20:59&#43;08:00'>
+                February 17, 2017
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              
+            </span>
+          </div>
+          
+          
+        </div>
+      </header>
+
+      <div>
+        
+
+<h2 id="引言">引言</h2>
+
+<p>Chef是一个自动化部署的工具。它的思想是“Infrastructure as code”, 所以整个DevOps流程下来都是代码，都可以保存在代码仓库里面。像Chef之类的工具出现之前，简单部署的话就是手工来了，像Java的web应用手工部署个War包或者改个配置文件什么的，高级点的可能会写个shell脚本来自动化。但是当需要管理的机器增多或者配置项增多，或者不同的机器要求不一样的配置的话，就力不从心了。Chef出现之后，这样的难题就迎刃而解了。</p>
+
+<p>Chef的实现是用的Ruby，所以它的配置脚本也是基于Ruby的, 所以想要学好Chef也需要了解一下Ruby的基本语法，如果想要扩展，定制，增加自己的Chef库的话，还是需要仔细学习一下Ruby才行。这导致Chef陡峭的学习曲线，了解个皮毛很容易，但是想要深入了解，诊断问题的话需要做很多功课才可以。</p>
+
+<p>想要学好，我们先搭环境，在应用中学习是最有成效的。</p>
+
+<h2 id="安装">安装</h2>
+
+<p>Chef安装很简单，就去下载一个叫做<a href="https://downloads.chef.io/">Chef DK</a>的包安装就可以了。这个会把Chef全家桶装好，里面开发测试用的所有工具都包含了。</p>
+
+<p>安装完后可以运行下面的命令检查一下
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">➜  ~ chef-solo -v
+Chef: 12.17.44</code></pre></div></p>
+
+<h2 id="第一个程序">第一个程序</h2>
+
+<p>我们可以通过下面的命令来创建我们的第一个Chef程序(它叫Cookbook)
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">chef generate cookbook sample1</code></pre></div></p>
+
+<p>下面是这个cookbook的目录结构:
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">.
+├── Berksfile
+├── README.md
+├── chefignore
+├── metadata.rb
+├── recipes
+│   └── default.rb
+├── spec
+│   ├── spec_helper.rb
+│   └── unit
+│       └── recipes
+│           └── default_spec.rb
+├── test
+│   └── smoke
+│       └── default
+│           └── default_test.rb</code></pre></div></p>
+
+<p>简单来说Chef的运行是顺序执行一个一个的Resource，Chef在Ruby语法的基础上封装了自己的DSL来把经常用到的命令，配置文件的管理等抽象成一个个的Resource。这些Resource根据需求顺序放在Chef的脚本里（它叫Recipe）就可以执行了。所以Chef的入口是Recipe，下面是一个简单的例子。</p>
+
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">file <span style="font-style:italic">&#39;/tmp/test.txt&#39;</span> <span style="font-weight:bold">do</span>
+  content <span style="font-style:italic">&#39;This is myfirst sample&#39;</span>
+  mode <span style="font-style:italic">&#39;0755&#39;</span>
+<span style="font-weight:bold">end</span></code></pre></div>
+
+<p>这个主代码块我们要放到recipes/default.rb里</p>
+
+<p>像这个file Resource就会在制定的路径创建一个php文件，然后填充文件的内容，设置用户和组，然后还有权限。简单而直观，没有Ruby的背景也能够轻易理解。
+要写在本地运行起来，我们还要创建两个文件：
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat ~/.chef/solo.rb 
+cookbook_path [<span style="font-style:italic">&#39;~/blog_samples/chef_intro/&#39;</span>]%</code></pre></div>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat test.json
+{
+<span style="font-style:italic">&#34;run_list&#34;</span>:[<span style="font-style:italic">&#34;sample1&#34;</span>]
+}</code></pre></div></p>
+
+<p>然后可以用下面的命令在本地来运行这个cookbook:
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">chef-solo -j test.json -c ~/.chef/solo.rb </code></pre></div></p>
+
+<p>然后我们看到了如下的输出
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Starting Chef Client, version 12.17.44
+resolving cookbooks <span style="font-weight:bold">for</span> run list: [<span style="font-style:italic">&#34;sample1&#34;</span>]
+Synchronizing Cookbooks:
+  - sample1 (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 1 resources
+Recipe: sample1::default
+  * file[/tmp/test.txt] action create
+    - create new file /tmp/test.txt
+    - update content in file /tmp/test.txt from none to ea8447
+    --- /tmp/test.txt	2017-02-23 21:20:46.000000000 +0800
+    +++ /tmp/.chef-test20170223-2804-c8bnol.txt	2017-02-23 21:20:46.000000000 +0800
+    @@ -1 +1,2 @@
+    +This is myfirst sample
+    - change mode from <span style="font-style:italic">&#39;&#39;</span> to <span style="font-style:italic">&#39;0755&#39;</span>
+
+Running handlers:
+Running handlers complete
+Chef Client finished, 1/1 resources updated in 12 seconds</code></pre></div></p>
+
+<p>这表示成功执行完了，可以到那个地方检查一下这个文件是否被创建了。
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat /tmp/test.txt 
+This is myfirst sample</code></pre></div><br />
+到这之后然后可能会想要修改文件的mode， 这可以通过Attribute来实现。</p>
+
+<p><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">file <span style="font-style:italic">&#39;/tmp/test.txt&#39;</span> <span style="font-weight:bold">do</span>
+  content <span style="font-style:italic">&#39;This is myfirst sample&#39;</span>
+  mode node[<span style="font-style:italic">&#39;chef_intro&#39;</span>][<span style="font-style:italic">&#39;sample1&#39;</span>][<span style="font-style:italic">&#39;file_mode&#39;</span>]
+<span style="font-weight:bold">end</span></code></pre></div>
+这些Attribute是在另一个Ruby文件（attributes/default.rb）定义的：
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  default[<span style="font-style:italic">&#39;chef_intro&#39;</span>][<span style="font-style:italic">&#39;sample1&#39;</span>][<span style="font-style:italic">&#39;file_mode&#39;</span>] = <span style="font-style:italic">&#39;755&#39;</span></code></pre></div>
+然后修改我们的用户配置test.json为:
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">{
+  <span style="font-style:italic">&#34;run_list&#34;</span>:[<span style="font-style:italic">&#34;sample1&#34;</span>],
+  <span style="font-style:italic">&#34;chef_intro&#34;</span>: {
+  	<span style="font-style:italic">&#34;sample1&#34;</span>: {
+  		<span style="font-style:italic">&#34;file_mode&#34;</span>: <span style="font-style:italic">&#34;644&#34;</span>
+  	}
+  }
+ </code></pre></div>
+ 再次运行这个cookbook可以看到输出已经把文件的mode改成644了，通过这种方式我们就可以通过从外面的配置覆盖cookbook的默认值，达到定制化配置的目的。
+ <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> Recipe: sample1::default
+  * file[/tmp/test.txt] action create
+    - change mode from <span style="font-style:italic">&#39;0755&#39;</span> to <span style="font-style:italic">&#39;0644&#39;</span>
+ </code></pre></div></p>
+
+      </div>
+
+      <footer>
+        <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "seanguo" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      </footer>
+    </article>
+
+    
+  </section>
+
+      </div>
+
+      <footer class="footer">
+  <section class="container">
+    
+      <p>Still water runs deep.</p>
+    
+     © 2019
+    
+       · 
+       <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/">Coder</a>.
+    
+    
+  </section>
+</footer>
+
+    </main>
+
+    
+
+  </body>
+
+</html>

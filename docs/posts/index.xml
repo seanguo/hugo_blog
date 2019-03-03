@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Sean&#39;s Blog</title>
+    <link>https://seanguo.github.io/posts/</link>
+    <description>Recent content in Posts on Sean&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 28 May 2017 20:25:34 +0800</lastBuildDate>
+    
+	<atom:link href="https://seanguo.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Shell&#43;Ruby</title>
+      <link>https://seanguo.github.io/posts/2017-05-28-shell-plus-ruby/</link>
+      <pubDate>Sun, 28 May 2017 20:25:34 +0800</pubDate>
+      
+      <guid>https://seanguo.github.io/posts/2017-05-28-shell-plus-ruby/</guid>
+      <description>最近公司产品的新特性开发的不是那么多了，所以自己有时间闲下来偿还一下以前欠下的技术债。公司的发版流程是自己一步步实现出来的，整体结构是由一个个的shell脚本来实现的。把发版的每一个步骤拆分为独立的一个个脚本，这样流程变化了可以通过脚本组合的变化来适应变化。毕竟能够维持不变的东西永远是变化。
+以前的问题是由于当时开发的紧迫性，加上自己对脚本的不太重视，导致开发的这些脚本整体结构还算好，但是就是里面会有很多重复的常量在里面。这里的常量就是要发版的各个组件的名字，由于目前产品组件的不确定性，经常会添加或者删除一个组件，目前的缺点就是添加或者删除一个组件的时候需要更改多个脚本，违背了SPOT原则，会很容易遗落下本应同步修改的脚本。
+这次自己有时间了决定把这些常量提取出去作为一个配置文件单独存在，思路是简单而直接的，但是由于shell脚本的局限性，把组件名字提出去还算可行，但是我想要对每个组件加上单独的其他配置的话好像比较绕。以以下脚本为例来说： {% codeblock lang:bash%} for repo in &amp;ldquo;COM_A COM_B COM_C&amp;rdquo; do cd $repo if [ $repo == &amp;ldquo;COM_B&amp;rdquo; cd modules fi mvn setVersion=$newVersion done {% endcodeblock %} 这个脚本是迭代每个组件，然后去修改pom.xml里面的version改为要发版的version，问题有的组件的parent的pom.xml没在根目录下，需要切换到对应的目录才能进行操作。
+我们可以很容易就把 &amp;ldquo;COM_A COM_B COM_C&amp;rdquo; 提取出去， 例如： {% codeblock lang:bash%} export all_repos=&amp;ldquo;COM_A COM_B COM_C&amp;rdquo; {% endcodeblock %}
+这样脚本就变成了 {% codeblock lang:bash%} for repo in $all_repos do cd $repo if [ $repo == &amp;ldquo;oneRepo&amp;rdquo; cd modules fi mvn versions:set -DnewVersion=$newVersion done {% endcodeblock %}</description>
+    </item>
+    
+    <item>
+      <title>SIP Headers</title>
+      <link>https://seanguo.github.io/posts/2017-04-23-sip-headers/</link>
+      <pubDate>Sun, 23 Apr 2017 19:45:06 +0800</pubDate>
+      
+      <guid>https://seanguo.github.io/posts/2017-04-23-sip-headers/</guid>
+      <description>##引言 SIP协议的设计很多参考了已有的HTTP协议，例如都是用的文本，验证用户相关的header和content-type和body的设计。这里主要说一下SIP独有的这些header，其中对路由相关的header又是重点要说的。
+##From和To 这两个header是作为标识存在的，对协议本身的路由来说不起什么作用。在实际电话呼叫中会标识主叫方和被叫方。其中的tag参数被选用来标识session。除了这两个tag参数外，session的标识还要用到另外一个header： Call-ID的值。下面是RFC3261里面的一个例子： {% codeblock %} From: &amp;ldquo;Bob&amp;rdquo; sips:bob@biloxi.com ;tag=a48s From: sip:+12125551212@phone2net.com;tag=887s From: Anonymous sip:c8oqz84zk7z@privacy.org;tag=hyh8
+To: Carol sip:carol@chicago.com {% endcodeblock %} 可以看到这两个header里可以包含一个用来描述这个URI的display name。在呼叫中这个就会用来标识呼叫的主被叫的名字。
+From和To在一侧的请求和响应里是一致的，但是和呼叫另一侧发过来的请求是相反的。
+##Contact 这个header用来标识session内这个UA期望对方request发送到的地址。在一个Invite发起的session中，一般会包含在Invite和对应的响应里。它所表示的地址就是session内ACK，Bye，re-Invite等发送到这个UA的地址。 {% codeblock %} Contact: sip:pc33.atlanta.com {% endcodeblock %}
+##Via 上面讲的Contact是为request指示地址，而Via是为request对应的response来指示地址的。它是在request被发送的时候添加的，而对方收到请求之后会把响应发给这个header标示的地址。如果涉及到NAT或者防火墙之类的，这个发送方添加的地址和接收方收到的源地址不同的情况。这种情况下协议添加了个received的参数来标示实际收到的request是从哪发来的。这样保证了response能原路发送回request发送方。RFC3261中介绍了这种情况下的一个例子： {% codeblock %} INVITE sip:bob@Biloxi.com SIP/2.0 Via: SIP/2.0/UDP bobspc.biloxi.com:5060 {% endcodeblock %} 这个request的接收方发现它的源地址是和via里面的地址不一样的，所以就在里面加上了received参数来标示实际的源地址： {% codeblock %} INVITE sip:bob@Biloxi.com SIP/2.0 Via: SIP/2.0/UDP bobspc.biloxi.com:5060;received=192.0.2.4 {% endcodeblock %}
+Via里面还有个重要的参数branch来标示这个request对应的transaction。
+##Request-Uri 这个准确来说不是一个header，因为它是request第一行里请求类型后面的URI。它是用来标识请求要发向的地址的，因为我们前面说了To header不决定路由。
+##Route和Record-Route 在没有Proxy的情况下只要一个Request-Uri就能把request路由到目的地了，但是实际情况是request总要经过一些Proxy来达到目的地。所以我们还要用Route来标示请求中间经过的节点。当Proxy收到请求后发现top Route是自己的地址就会去掉转发给下一个目的地。如果这个Proxy配置成Record Route的，就会在请求中加入Record-Route这个header，这个header的加入就表示session内的其他请求也会经过这个节点。所以Record-Route是保存在session内的状态，它和Contact共同决定了session内请求的路由路径。</description>
+    </item>
+    
+    <item>
+      <title>Vagrant&#43;Chef</title>
+      <link>https://seanguo.github.io/posts/2017-03-12-vagrant-plus-chef/</link>
+      <pubDate>Sun, 12 Mar 2017 19:32:51 +0800</pubDate>
+      
+      <guid>https://seanguo.github.io/posts/2017-03-12-vagrant-plus-chef/</guid>
+      <description>##引言
+前面我介绍了Chef的环境搭建和简单的cookbook的创建执行，也介绍了如果用Vagrant来快速搭建一台虚拟机。但是所有的东西都停留在hello world的阶段，这篇文章就是结合这两个生产力工具来搭建一组可以实际使用用来做rails开发的server。
+##Chef Provisioning 我们知道Vagrant包含多种不同类型的provisioner，而Chef就是其中内置的一种，所以我们是可以直接使用的。这里我们用到的是chef_solo, Chef Solo是Chef Client的单机版，运行不依赖于Chef Server。
+第一步我们要下载我们需要安装的组件的cookbook，这里我们会用到第三方的cookbook，因为在社区里已经有很多成熟的cookbook了。但是手工下载的方式不太方便，这里我们用到cookbook的依赖管理的工具: Berkshelf。它和Ruby的gem管理文件Gemfile语法类似，它的配置文件是Berksfile。我们在当前文件夹（我这里是vagrant_test）创建一个空的Berksfile。chef-dk里面已经包含Berkshelf的命令行工具了，对应的命令是berks, 但是Vagrant想要用Berkshelf的时候我们还要装个插件来实现，可以用下面的命令来安装最新Berkshelf的插件。 {% codeblock lang:bash%} vagrant plugin install vagrant-berkshelf {% endcodeblock %}
+然后编辑Berksfile加上如下两行： {% codeblock lang:ruby%} source &amp;lsquo;https://supermarket.chef.io&#39;
+cookbook &amp;lsquo;rails&amp;rsquo;, &amp;lsquo;~&amp;gt; 0.9.2&amp;rsquo; {% endcodeblock %} source语句指定了去supermarket.chef.io搜索下载cookbook, 第二行声明我们依赖于一个叫rails的cookbook，version为0.9.2，关于version的语法可以戳这里。
+我们接着创建一个新的Vagrantfile, 这里我们打算创建两个虚拟机，一个作为rails的主server，另一个用来安装mysql。我们先看第一台虚拟机的配置： {% codeblock lang:ruby%}
+-- mode: ruby -- vi: set ft=ruby : Vagrant.configure(&amp;ldquo;2&amp;rdquo;) do |config|
+#base box for all machines config.vm.box = &amp;ldquo;bento/centos-6.7&amp;rdquo;
+#define a VM named rails config.vm.define &amp;ldquo;rails&amp;rdquo; do |rails|</description>
+    </item>
+    
+    <item>
+      <title>Chef 介绍 Part1 Setup</title>
+      <link>https://seanguo.github.io/posts/2017-02-17-chefjie-shao/</link>
+      <pubDate>Fri, 17 Feb 2017 20:20:59 +0800</pubDate>
+      
+      <guid>https://seanguo.github.io/posts/2017-02-17-chefjie-shao/</guid>
+      <description>引言 Chef是一个自动化部署的工具。它的思想是“Infrastructure as code”, 所以整个DevOps流程下来都是代码，都可以保存在代码仓库里面。像Chef之类的工具出现之前，简单部署的话就是手工来了，像Java的web应用手工部署个War包或者改个配置文件什么的，高级点的可能会写个shell脚本来自动化。但是当需要管理的机器增多或者配置项增多，或者不同的机器要求不一样的配置的话，就力不从心了。Chef出现之后，这样的难题就迎刃而解了。
+Chef的实现是用的Ruby，所以它的配置脚本也是基于Ruby的, 所以想要学好Chef也需要了解一下Ruby的基本语法，如果想要扩展，定制，增加自己的Chef库的话，还是需要仔细学习一下Ruby才行。这导致Chef陡峭的学习曲线，了解个皮毛很容易，但是想要深入了解，诊断问题的话需要做很多功课才可以。
+想要学好，我们先搭环境，在应用中学习是最有成效的。
+安装 Chef安装很简单，就去下载一个叫做Chef DK的包安装就可以了。这个会把Chef全家桶装好，里面开发测试用的所有工具都包含了。
+安装完后可以运行下面的命令检查一下 ➜ ~ chef-solo -v Chef: 12.17.44
+第一个程序 我们可以通过下面的命令来创建我们的第一个Chef程序(它叫Cookbook) chef generate cookbook sample1
+下面是这个cookbook的目录结构: . ├── Berksfile ├── README.md ├── chefignore ├── metadata.rb ├── recipes │ └── default.rb ├── spec │ ├── spec_helper.rb │ └── unit │ └── recipes │ └── default_spec.rb ├── test │ └── smoke │ └── default │ └── default_test.rb
+简单来说Chef的运行是顺序执行一个一个的Resource，Chef在Ruby语法的基础上封装了自己的DSL来把经常用到的命令，配置文件的管理等抽象成一个个的Resource。这些Resource根据需求顺序放在Chef的脚本里（它叫Recipe）就可以执行了。所以Chef的入口是Recipe，下面是一个简单的例子。
+file &amp;#39;/tmp/test.txt&amp;#39; do content &amp;#39;This is myfirst sample&amp;#39; mode &amp;#39;0755&amp;#39; end 这个主代码块我们要放到recipes/default.</description>
+    </item>
+    
+    <item>
+      <title>如何构建黑苹果(Hackintosh)</title>
+      <link>https://seanguo.github.io/posts/2017-01-17-ru-he-gou-jian-hei-ping-guo-hackintosh/</link>
+      <pubDate>Tue, 17 Jan 2017 20:55:12 +0800</pubDate>
+      
+      <guid>https://seanguo.github.io/posts/2017-01-17-ru-he-gou-jian-hei-ping-guo-hackintosh/</guid>
+      <description>引言 上大学的时候就想在PC上装个Mac操作系统来玩玩，因为已经观看了Windows安装的进度条多次，现在想要看看Mac怎么样。记得当时是想在虚拟机里装个Mac系统，但是停留在设置系统的部分，因为系统不能识别鼠标和键盘，只能作罢。 上次的尝试是自己的新PC刚组装好的时候，这次已经掌握了Google，知道了这个东西叫Hackintosh，上各大论坛搜索相关的资料和安装教程，这次再次以失败告终，这次停在了安装时候的crash。 最近晚上又有一些闲工夫，看到了tonyMacX86里居然说已经有我的显卡GTX970的官方驱动了，所以再一次走进这个坑，皇天不负有心人，铁杵终能磨成针，这一次终于安装好了。下面就是这次我的安装历程，不算一个教程，因为那个论坛里的教程已经非常好了。
+安装前 这个就是我当初跟随的教程。它这个也是分为三个阶段来讲述的，需要用到一些工具，这些工具这个论坛也提供了下载，但是要注册登录后才可以。黑苹果的设置安装过程中会用到Mac，所以你手头必须有个Mac才行。
+第一步 它的第一步是下载这个最新的Mac Sierra系统，我这在公司的Mac上已经下载好了但是由于怕搞坏我本机的开发环境一直没敢升级。默认升级后会问你是不是要删掉这个下载好的安装程序。
+第二步 创建可以自启动的Mac安装盘，用到的工具是UniBeast。我在这一步卡壳了一下，因为手头没有16G以上的U盘，打算用手头的移动硬盘来作为启动盘，但是这就出问题了。按说明格式化好后打开UniBeast之后发现不了移动硬盘，google一下原来是新版的UniBeast不支持64GB以上的移动存储。wtf！只能把移动硬盘分区了，这块又有问题，Mac的磁盘工具的Partition按钮不可用，继续google吧，这次找到了Mac下面这个命令来解决： diskutil partitionDisk disk2 1 GPT HFS+ newdisk R 这里要注意disk2是你的移动硬盘。 然后下面顺利分了两个区，这个启动的区设为了64GB。然后再次启动UniBeast一路continue安装好了启动盘。
+第三步 主板的BIOS/UEFI设置，直接找到了论坛里一个我的主板阿苏斯Z97-A的配置，把安全启动里的安全模式改为其他操作系统即可。
+安装 重启按F8选择UEFI（和制作启动盘是Unibeast里的mode要要一致）的移动硬盘启动，黑屏白苹果进度条，成功进入安装界面这次没有Kernel Panic之类的错误，然后就是进入磁盘工具格式化分区，这块又是一个坑。磁盘工具报错没有空间来执行操作，继续google大法发现有人说是苹果的这个磁盘工具要求硬盘上必须有个&amp;gt;=200MB的EFI分区才行，wtf！而用windows分区出来的硬盘是没有那么大的EFI分区或者压根没有（可以用Windows的磁盘管理来查看目标磁盘有没有EFI分区）， 我的属于后者。继续google吧，发现了下面一个救命视频，这个方法保持了不伤数据, 这个视频是在油管发现的，需要翻墙才能看，下面把里面的命令扒下来，具体来说就是没有EFI分区我可以用windows的磁盘工具创建一个出来： diskpart list disk sel disk 1(你的目标磁盘号) list volumne sel vol 5（你的目标分区号） shrink desired=300（压缩这个分区300M来创建EFI分区） create partition efi size=300 format quick fs=fat32 Label=&amp;#34;System&amp;#34; 经过这个之后磁盘工具终于可以运行了，但是在这块儿我又碰到一个我指定的硬盘分区使用率为100%的问题（实际上是空的），但是有个分区确是好的，这块没有深究，把可用的磁盘中的文件拷贝过去，重启继续了安装在了好的分区。这次是顺利完成了安装，也成功进入了设置界面。
+安装后 设置完整后该是用Multibeast来装驱动了，这块又碰到个不起作用的问题，google来google去都没解决，后来无意中发现这个MultiBeast默认是把设置install到了系统盘，但是我的引导盘应该是叫做USB的移动硬盘才对，驱动应该是装在那来才对，修改目标地址为其终于是解决了声卡驱动的问题。
+然后到了显卡驱动，这块很多问题可以参考这个帖子。这块我走了很多弯路，导致第一天没有完成这个安装，拖到了第二天晚上。开始是安装好了WebDriver，但是无法切换到Nvdia的驱动，总是用的Mac自带的驱动，这个的现象就是关于里面显示显卡的显存为0MB。google了一圈然后又回来了tonyMacX86论坛扫帖子，有人说是Inject Nvdia应该从Clover的配置里去掉。这块改Clover的配置又是琢磨了半天。下载了个Clover Configurator用里面的Mount EFI分区后才能发现这个配置文件。 去掉Inject Nvdia然后把webDriver设成true还是不行。这次现象是Nvdia控制面板显示驱动已经勾上了，但是关于里没有正确识别显卡型号，说是Nvdia Model 5MB，具体记不太清了，继续google，搜论坛吧，有的说是Inject了Intel的显卡驱动，看了看没有，有的说打开webdriver后应该吧Clover的启动名利里去掉nv_disable=1，这块我栽了个大跟头，我把1改成了0，还是不行，浪费了很多时间，最后终于想起把nv_disable=0整个去掉试试，哪知道居然成功了。终于是大功告成了，赶紧发了个朋友圈庆祝了一下。
+Update to High Serria  Foollowing guide in https://www.tonymacx86.com/threads/update-directly-to-macos-high-sierra.232707/ Auto-Update Nvdia Wed driver on restart Redo autio driver: https://www.</description>
+    </item>
+    
+    <item>
+      <title>Vagrant 入门</title>
+      <link>https://seanguo.github.io/posts/2016-11-16-vagrant-ru-men/</link>
+      <pubDate>Wed, 16 Nov 2016 11:48:43 +0800</pubDate>
+      
+      <guid>https://seanguo.github.io/posts/2016-11-16-vagrant-ru-men/</guid>
+      <description>##介绍 Vagrant是一个虚拟机管理工具，通过它你可以用几个简单的命令快速搭建一个配置好的虚拟机环境。它提供了多种虚拟机provider所以你可以用同一个设置文件去驱动设置不同的虚拟机。
+它的核心文件叫做Vagrantfile，所有的虚拟机的配置都是在这里。我们可以在里面定义各个provider的配置，如果去用provisioner去设置虚拟机，安装应用程序。有了这个配置文件，你就可以很方便的快速重复构建一个测试环境。这让Docker出现之前成为了开发员很热衷的一个环境设置工具。 我这篇文章将会一步一步来搭建一个测试环境。这样从头来讲解Vagrant的基本使用方法，希望可以帮到那些想要学习Vagrant的人。
+##初始设置 首先你需要去下载适合你操作系统的Vagrant安装包。安装完之后我们还需要安装VirtualBox来作为演示用的provider。因为Virtualbox是Vagrant的provider，当然当你熟悉Vagrant之后可以通过修改全局的配置文件来修改默认的provider。一切都安装好了之后我们需要打开一个shell窗口，新建一个文件夹作为这次演示用的。 {% codeblock lang:bash%} mkdir vagrant_leanring cd vagrant_leanring vagrant init {% endcodeblock %} 这里用到了第一个命令 vagrant init 这个命令会在当然目录生成如下这样的一个Vagrantfile，我们可以以这个为模板来修改运行我们自己的演示。 {% codeblock lang:ruby%}
+-- mode: ruby -- vi: set ft=ruby : All Vagrant configuration is done below. The &amp;ldquo;2&amp;rdquo; in Vagrant.configure configures the configuration version (we support older styles for backwards compatibility). Please don&amp;rsquo;t change it unless you know what you&amp;rsquo;re doing. Vagrant.configure(2) do |config| # The most common configuration options are documented and commented below.</description>
+    </item>
+    
+    <item>
+      <title>itunes的备份之后的文件在哪儿</title>
+      <link>https://seanguo.github.io/posts/2013-11-27-itunes-backup-location/</link>
+      <pubDate>Wed, 27 Nov 2013 19:46:51 +0800</pubDate>
+      
+      <guid>https://seanguo.github.io/posts/2013-11-27-itunes-backup-location/</guid>
+      <description> Windows 7的在 C:/Users/[用户名]/AppData/Roaming/Apple Computer/MobileSync/Backup/
+ Windows XP: C:/Documents and Settings(用户名)/Application Data/Apple Computer/MobileSync/Backup
+ Mac 中：~/Library/Application Support/MobileSync/Backup
+  </description>
+    </item>
+    
+    <item>
+      <title>NoSql database compare</title>
+      <link>https://seanguo.github.io/posts/2013-11-27-nosql-database-compare/</link>
+      <pubDate>Wed, 27 Nov 2013 16:47:57 +0800</pubDate>
+      
+      <guid>https://seanguo.github.io/posts/2013-11-27-nosql-database-compare/</guid>
+      <description>##Introduction
+The goal of this article is trying compare the popular NoSql databases and choose one for one of our company&amp;rsquo;s product. It was based on SQL database but suffering from low scalibility and performance. So we want to migrate to NoSQL based product. Since Most of the NoSQL database are of high scalibility and performance under some condition.
+Before that we need to know some of the backgournd knowlege. Currently there are two kind of data store model:</description>
+    </item>
+    
+    <item>
+      <title>My Ruby learning</title>
+      <link>https://seanguo.github.io/posts/2013-11-27-my-ruby-learning/</link>
+      <pubDate>Wed, 27 Nov 2013 09:39:36 +0800</pubDate>
+      
+      <guid>https://seanguo.github.io/posts/2013-11-27-my-ruby-learning/</guid>
+      <description>{% codeblock Output something lang:ruby%} puts File.exists?(&amp;ldquo;/Users/sean/Desktop/test.rb&amp;rdquo;) {% endcodeblock %}</description>
+    </item>
+    
+    <item>
+      <title>Materials to learn Chef</title>
+      <link>https://seanguo.github.io/posts/2013-11-26-materials-to-learn-chef/</link>
+      <pubDate>Tue, 26 Nov 2013 20:57:31 +0800</pubDate>
+      
+      <guid>https://seanguo.github.io/posts/2013-11-26-materials-to-learn-chef/</guid>
+      <description>##Setup: ###Develop tool: * Vagrant Setup: http://docs.vagrantup.com/v2/vagrantfile/vagrant_settings.html
+ Get started guide: http://vialstudios.com/guide-authoring-cookbooks.html
+ Another: http://misheska.com/blog/2013/06/16/getting-started-writing-chef-cookbooks-the-berkshelf-way/
+  ##Beginner: * http://docs.opscode.com/chef/resources.html * http://docs.opscode.com/chef/lwrps_custom.html * https://wiki.opscode.com/display/chef/Breaking+Changes+in+Chef+11 * http://docs.opscode.com/release_notes.html ##Advanced: * http://www.prashantrajan.com/posts/2013/06/leveling-up-chef-best-practices/ * http://erik.hollensbe.org/2013/03/16/the-chef-resource-run-queue/
+###Good cookbooks * https://github.com/opscode/chef * https://github.com/RiotGames/artifact-cookbook * https://github.com/opscode-cookbooks/database * https://github.com/opscode-cookbooks/mysql * https://github.com/realityforge/chef-glassfish
+##Testing: * http://technology.customink.com/blog/2012/08/03/testing-chef-cookbooks/
+##Ruby: * http://ruby-doc.com/docs/ProgrammingRuby/ * http://www.ruby-doc.org/ * http://rubydoc.info/gems/chef/11.6.0/frames</description>
+    </item>
+    
+    <item>
+      <title>Hello World</title>
+      <link>https://seanguo.github.io/posts/2013-11-26-hello-world/</link>
+      <pubDate>Tue, 26 Nov 2013 15:42:16 +0800</pubDate>
+      
+      <guid>https://seanguo.github.io/posts/2013-11-26-hello-world/</guid>
+      <description>Thanks http://zerodie.github.io/blog/2012/01/19/octopress-github-pages/ I got this blog system working.</description>
+    </item>
+    
+  </channel>
+</rss>

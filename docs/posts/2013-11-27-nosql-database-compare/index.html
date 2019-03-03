@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="author" content="Sean Guo">
+    <meta name="description" content="Sean Guo&#39;s personal website">
+    <meta name="keywords" content="blog,developer,personal">
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="NoSql database compare"/>
+<meta name="twitter:description" content="Nosql database compare"/>
+
+
+    <base href="https://seanguo.github.io/posts/2013-11-27-nosql-database-compare/">
+    <title>
+  NoSql database compare · Sean&#39;s Blog
+</title>
+
+    <link rel="canonical" href="https://seanguo.github.io/posts/2013-11-27-nosql-database-compare/">
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700|Merriweather:300,700|Source+Code+Pro:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css" integrity="sha256-oSrCnRYXvHG31SBifqP2PM1uje7SJUyX0nTwO2RJV54=" crossorigin="anonymous" />
+
+    
+      
+      
+      <link rel="stylesheet" href="https://seanguo.github.io/css/coder.min.8881182b3ec36ffd9c735306f7e16ce9b1129ebc650e069e7c4114827e9d9b23.css" integrity="sha256-iIEYKz7Db/2cc1MG9&#43;Fs6bESnrxlDgaefEEUgn6dmyM=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+
+    
+      <link rel="stylesheet" href="https://seanguo.github.io/css/custom.css">
+    
+
+    <link rel="icon" type="image/png" href="https://seanguo.github.io/img/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://seanguo.github.io/img/favicon-16x16.png" sizes="16x16">
+
+    
+
+    <meta name="generator" content="Hugo 0.54.0" />
+  </head>
+
+  <body class=" ">
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="https://seanguo.github.io">
+      Sean&#39;s Blog
+    </a>
+    <input type="checkbox" id="menu-toggle" />
+    <label class="menu-button float-right" for="menu-toggle"><i class="fas fa-bars"></i></label>
+    <ul class="navigation-list">
+      
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://seanguo.github.io/posts/">Blog</a>
+          </li>
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://seanguo.github.io/about/">About</a>
+          </li>
+        
+      
+      
+    </ul>
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">NoSql database compare</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2013-11-27T16:47:57&#43;08:00'>
+                November 27, 2013
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              
+            </span>
+          </div>
+          
+          
+        </div>
+      </header>
+
+      <div>
+        <p>##Introduction</p>
+
+<p>The goal of this article is trying compare the popular NoSql databases and choose one for one of our company&rsquo;s product. It was based on SQL database but suffering from low scalibility and performance. So we want to migrate to NoSQL based product. Since Most of the NoSQL database are of high scalibility and performance under some condition.</p>
+
+<p>Before that we need to know some of the backgournd knowlege. Currently there are two kind of data store model:</br></p>
+
+<!-- more -->
+
+<p>###RDBMS:</p>
+
+<p>A short definition of an RDBMS is: a DBMS in which data is stored in tables and the relationships among the data are also stored in tables. The data can be accessed or reassembled in many different ways without having to change the table forms.</br></p>
+
+<p>This one is the data store model currently used in the SIPoint product that is facilitated by the using of the Hibernate framework to get a uniform interface to manipulate all kinds of database. The Hibernate framework is doing the Object Relation Mapping to keep programmer from complex SQL language. </br></p>
+
+<p>But the disadvantage of the RDBMS is the low efficiency when get lots of concurrent write operation to the database and it is hard to scale the database to multiple servers.  And in the contrast here comes:</p>
+
+<p>###NoSql:
+In computing, NoSQL is a broad class of database management systems that differ from classic relational database management systems (RDBMSes) in some significant ways. These data stores may not require fixed table schemas, usually avoid join operations, and typically scale horizontally. Academia typically refers to these databases as structured storage, a term that would include classic relational databases as a subset.
+NoSql sacrifices some not necessary consistence in some circumstances to get high performance and easy to scale up.</br></p>
+
+<p>##NoSQL vs. SQL databases</p>
+
+<p>There are some concepts must be given a short introduction before we can do the compare.</br></p>
+
+<ul>
+<li><strong>Relation Model</strong>: The relational model&rsquo;s central idea is to describe a database as a collection of predicates over a finite set of predicate variables, describing constraints on the possible values and combinations of values. The content of the database at any given time is a finite (logical) model of the database, i.e. a set of relations, one per predicate variable, such that all predicates are satisfied. A request for information from the database (a database query) is also a predicate.</li>
+<li><strong>ACID</strong>: ACID (atomicity, consistency, isolation, durability) is a set of properties that guarantee database transactions are processed reliably.</li>
+<li><strong>Atomicity</strong> requires that database modifications must follow an &ldquo;all or nothing&rdquo; rule. Each transaction is said to be atomic. If one part of the transaction fails, the entire transaction fails and the database state is left unchanged.</li>
+<li><strong>Isolation</strong> refers to the requirement that other operations cannot access data that has been modified during a transaction that has not yet completed.</li>
+<li><strong>Durability</strong> is the ability of the DBMS to recover the committed transaction updates against any kind of system failure (hardware or software).</li>
+<li><strong>CAP</strong>: The CAP theorem, also known as Brewer&rsquo;s theorem, states that there are three primary concerns you must balance when choosing a data management system: consistency, availability, and partition tolerance.</br></li>
+<li><strong>Consistency</strong> means that each client always has the same view of the data. </br></li>
+<li><strong>Availability</strong> means that all clients can always read and write.</br></li>
+
+<li><p><strong>Partition</strong> tolerance means that the system works well across physical network partitions.</br>
+According to the theorem, a distributed system can satisfy any two of these guarantees at the same time, but not all three.</br></p></li>
+
+<li><p><strong>Data Model</strong>:</p></li>
+
+<li><p>Relational systems are the databases we&rsquo;ve been using for a while now. RDBMSs and systems that support ACIDity and joins are considered relational.</br></p></li>
+
+<li><p>Key-value systems basically support get, put, and delete operations based on a primary key.</br></p></li>
+
+<li><p>Column-oriented systems still use tables but have no joins (joins must be handled within your
+application). Obviously, they store data by column as opposed to traditional row-oriented databases. This makes aggregations much easier.</br></p></li>
+
+<li><p>Document-oriented systems store structured &ldquo;documents&rdquo; such as JSON or XML but have no joins (joins must be handled within your application). It&rsquo;s very easy to map data from object-oriented software to these systems.</br></p></li>
+
+<li><p><strong>MapReduce</strong>: MapReduce is a framework for processing huge datasets on certain kinds of distributable problems using a large number of computers (nodes), collectively referred to as a cluster (if all nodes use the same hardware) or as a grid (if the nodes use different hardware). Computational processing can occur on data stored either in a filesystem (unstructured) or within a database (structured).</p></li>
+
+<li><p>&ldquo;<strong>Map</strong>&rdquo; step: The master node takes the input, partitions it up into smaller sub-problems, and distributes those to worker nodes. A worker node may do this again in turn, leading to a multi-level tree structure. The worker node processes that smaller problem, and passes the answer back to its master node.</p></li>
+
+<li><p>&ldquo;<strong>Reduce</strong>&rdquo; step: The master node then takes the answers to all the sub-problems and combines them in some way to get the output – the answer to the problem it was originally trying to solve.</br>
+The advantage of MapReduce is that it allows for distributed processing of the map and reduction operations. Provided each mapping operation is independent of the others, all maps can be performed in parallel. This framework is often applied by the distributed NoSQL databases.</br></p></li>
+
+<li><p><strong>Eventual consistency</strong>: This is a specific form of weak consistency; the storage system guarantees that if no new updates are made to the object, eventually all accesses will return the last updated value. If no failures occur, the maximum size of the inconsistency window can be determined based on factors such as communication delays, the load on the system, and the number of replicas involved in the replication scheme. The most popular system that implements eventual consistency is DNS (Domain Name System). Updates to a name are distributed according to a configured pattern and in combination with time-controlled caches; eventually, all clients will see the update.</br></p></li>
+
+<li><p><strong>Multiversion concurrency control</strong> (abbreviated MCC or MVCC), in the database field of computer science, is a concurrency control method commonly used by database management systems to provide concurrent access to the database and in programming languages to implement transactional memory.</br></p></li>
+</ul>
+
+<p>For instance, a database will implement updates not by deleting an old piece of data and overwriting it with a new one, but instead by marking the old data as obsolete and adding the newer &ldquo;version.&rdquo; Thus there are multiple versions stored, but only one is the latest. This allows the database to avoid overhead of filling in holes in memory or disk structures but requires (generally) the system to periodically sweep through and delete the old, obsolete data objects.</br></p>
+
+<p>Below are the general compare between the two data store models:</br></p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Schema</th>
+<th>ACID</th>
+<th>CAP</th>
+<th>Efficiency</th>
+<th>Scalability</th>
+<th>Programming</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>RDBMS</td>
+<td>Fixed</td>
+<td>All</td>
+<td>Hardly no P</td>
+<td>Hard to scale</td>
+<td>Hibernate to unify all DB</td>
+<td></td>
+</tr>
+
+<tr>
+<td>NoSQL</td>
+<td>Not require fixed schema</td>
+<td>Not All</td>
+<td>CA or AP</td>
+<td>High performance on IO, and can use MapReduce to distribute work to multiple machines</td>
+<td>High scalability on design</td>
+<td>Each database has its own API, but it’s simple</td>
+</tr>
+</tbody>
+</table>
+
+<p></br>
+###NoSql databases compare</p>
+
+<p>Below we choose some popular NoSQL databases to do a comprehensive compare:</p>
+
+<p>###Basic compare</p>
+
+<p>| Name | Type | Open Source  | Source Language | CAP | Managing shell | Query Method | API | Concurrency | Successful usecases   | Scalability |
+|:&mdash;&ndash; | &mdash;&mdash;&ndash; | &mdash;&mdash;&mdash;&ndash; | &mdash;&mdash;&mdash;&mdash;&mdash; | &mdash; | &mdash;&mdash;&mdash;&mdash;&ndash; | &mdash;&mdash;&mdash;&mdash; | &mdash; | &mdash;&mdash;&mdash;&ndash; |
+| Cassadra | Wide column | Y | JAVA | AP, Configurable C | No shell  | MapReduce | Many Thrift client | Eventually consistence | Digg, Facebook, Twitter etc. | P2P, no single points of failure
+| Voldemort | Key-value | Y | C++ | AP | Built-in |   | Java | Eventually Consistent | Linkedin | Dynamo
+| Kyoto Cabinet &amp; Kyoto Tycoon | Key-value | Y | C++ | AP | Command Line Utility `kchashmgr&rsquo; | MapReduce | Many langs | Eventually consistency | mixi.jp | Asynchronous Master-slave or dual-master replication
+| MongoDB | Document oriented | Y | C++ | CP | Built-in | Dynamic object-based language &amp; MapReduce | BSON | Update in Place.  | The New York Times,SourceForge | Master-Slave Replication |
+| HBase | Wide column | Y | JAVA | CP | Jruby | MapReduce Java / any exec | Java / any writer  |   |   | Hadoop
+| Redis | Key-value | Y | C | CP | Built-in |  | Tons of languages | In memory and saves asynchronous disk after a defined time. Append only mode available. Different kinds of fsync policies. | github，Engine Yard | Master-slave replication
+| CouchDB | Document oriented | Y | Erlang | AP | None | MapReduceR of JavaScript | Funcs REST/JSON | MVCC |  |  peer-based distributed</p>
+
+<p></br>
+###Farther compare:</p>
+
+<p>For those databases mentioned in the above, first we dropped CouchDB since it only has REST API. KC and Redis are the lightweight Key-value implementation and can scale up in a small cluster. And Cassandra, Voldemort and HBase are good solutions for large-scale clusters. And for MongoDB the only document oriented database we will describe it later. And we will regroup these databases and do a farther compare.</p>
+
+<p>####Cassandra:</p>
+
+<p>The Apache Cassandra Project develops a highly scalable second-generation distributed database, bringing together Dynamo&rsquo;s fully distributed design and Bigtable&rsquo;s ColumnFamily-based data model.
+Cassandra was open sourced by Facebook in 2008, and is now developed by Apache committers and contributors from many companies.</p>
+
+<p>#####Feature:</p>
+
+<ul>
+<li>Fault Tolerant
+Data is automatically replicated to multiple nodes for fault-tolerance. Replication across multiple data centers is supported. Failed nodes can be replaced with no downtime.</li>
+<li>Decentralized
+Every node in the cluster is identical. There are no network bottlenecks. There are no single points of failure.</li>
+<li>You&rsquo;re in Control
+Choose between synchronous or asynchronous replication for each update. Highly available asynchronous operations are optimized with features like Hinted Handoff and Read Repair.</li>
+<li>Rich Data Model
+Allows efficient use for many applications beyond simple key/value.</li>
+<li>Elastic
+Read and write throughput both increase linearly as new machines are added, with no downtime or interruption to applications.</li>
+<li>Durable
+Cassandra is suitable for applications that can&rsquo;t afford to lose data, even when an entire data center goes down.</li>
+</ul>
+
+<p>#####Data Model:</p>
+
+<p>Cassandra provides a structured key-value store with tunable consistency. Keys map to multiple values, which are grouped into column families. The column families are fixed when a Cassandra database is created, but columns can be added to a family at any time. Furthermore, columns are added only to specified keys, so different keys can have different numbers of columns in any given family.</p>
+
+<p>The values from a column family for each key are stored together. This makes Cassandra a hybrid data management system between a column-oriented DBMS and a row-oriented store. Also, besides using the way of modeling of BigTable, it has properties like eventual consistency, the Gossip protocol, a master-master way of serving the read and write requests that are inspired by Amazon&rsquo;s Dynamo.
+The basic concepts are:</p>
+
+<ul>
+<li>Cluster: the machines (nodes) in a logical Cassandra instance. Clusters can contain multiple keyspaces.</li>
+<li>Keyspace: a namespace for ColumnFamilies, typically one per application.</li>
+<li>ColumnFamilies contain multiple columns, each of which has a name, value, and a timestamp, and which are referenced by row keys.</li>
+<li>SuperColumns can be thought of as columns that themselves have subcolumns.</li>
+</ul>
+
+<p><strong>Limitations</strong>:</p>
+
+<ul>
+<li>All data for a single row must fit (on disk) on a single machine in the cluster. Because row keys alone are used to determine the nodes responsible for replicating their data, the amount of data associated with a single key has this upper bound.</li>
+<li>A single column value may not be larger than 2GB.</li>
+<li>The maximum of column per row is 2 billion.</li>
+<li>The key (and column names) must be under 64K bytes.</li>
+</ul>
+
+<p>####HBase</p>
+
+<p>HBase is the Hadoop database. Use it when you need random, realtime read/write access to your Big Data. This project&rsquo;s goal is the hosting of very large tables &ndash; billions of rows X millions of columns &ndash; atop clusters of commodity hardware.
+HBase is an open-source, distributed, versioned, column-oriented store modeled after Google&rsquo; Bigtable: A Distributed Storage System for Structured by Chang et al. Just as Bigtable leverages the distributed data storage provided by the Google File System, HBase provides Bigtable-like capabilities on top of Hadoop.</p>
+
+<p>#####Feature:</p>
+
+<ul>
+<li>Convenient base classes for backing Hadoop MapReduce jobs with HBase tables including cascading, hive and pig source and sink modules</li>
+<li>Query predicate push down via server side scan and get filters</li>
+<li>Optimizations for real time queries</li>
+<li>A Thrift gateway and a REST-ful Web service that supports XML, Protobuf, and binary data encoding options</li>
+<li>Extensible jruby-based (JIRB) shell</li>
+<li>Support for exporting metrics via the Hadoop metrics subsystem to files or Ganglia; or via JMX</li>
+</ul>
+
+<p>#####Data Model:</p>
+
+<p>In short, applications store data into an HBase table. Tables are made of rows and columns. All columns in HBase belong to a particular column family. Table cells &ndash; the intersection of row and column coordinates &ndash; are versioned. A cell’s content is an uninterpreted array of bytes.</p>
+
+<p>Table row keys are also byte arrays so almost anything can serve as a row key from strings to binary representations of longs or even serialized data structures. Rows in HBase tables are sorted by row key. The sort is byte-ordered. All table accesses are via the table row key &ndash; its primary key.
+Cassandra and HBase are both highly scalable column-oriented database. Cassandra wins for its simple configuration and flexibility to switch between CAP attributes, no single point of failure is also more scalable.</p>
+
+<p>####Voldemort:</p>
+
+<p>Voldemort is a distributed key-value storage system</p>
+
+<p>#####Feature:</p>
+
+<ul>
+<li>Voldemort combines in memory caching with the storage system so that a separate caching tier is not required (instead the storage system itself is just fast)</li>
+<li>Unlike MySQL replication, both reads and writes scale horizontally</li>
+<li>Data portioning is transparent, and allows for cluster expansion without rebalancing all data</li>
+<li>Data replication and placement is decided by a simple API to be able to accommodate a wide range of application specific strategies</li>
+<li>The storage layer is completely mockable so development and unit testing can be done against a throw-away in-memory storage system without needing a real cluster (or even a real storage system) for simple testing</li>
+</ul>
+
+<p>#####Data Model:</p>
+
+<p>The equivalent here is a &ldquo;store&rdquo;, we don&rsquo;t use the word table since the data is not necessarily tabular (a value can contain lists and mappings which are not considered in a strict relational mapping). Each key is unique to a store, and each key can have at most one value.</p>
+
+<p>Note that although we don&rsquo;t support one-many relations, we do support lists as values that accomplishes the same thing&ndash;so it is possible to store a reasonable number of values associated with a single key. This corresponds to a java.util.Map where the value is a java.util.List.</p>
+
+<p>Serialization in Voldemort is pluggable so you can use one of the baked in serializers or easily write your own. At the lowest level the data format for Voldemort is just arrays of bytes for both keys and values. Higher-level data formats are a configuration option that are set for each Store&ndash;any format can be supported by implementing a Serializer class that handles the translation between bytes and objects. Doing this ensures the client serializes the bytes correctly.</p>
+
+<p><strong>Operations</strong>:</p>
+
+<p>To enable high performance and availability we allow only very simple key-value data access. Both keys and values can be complex compound objects including lists or maps, but none-the-less the only supported queries are effectively the following:
+{% codeblock %}
+value = store.get(key)
+store.put(key, value)
+store.delete(key)
+{% endcodeblock %}</p>
+
+<p>Voldemort supports hashtable semantics, so a single value can be modified at a time and retrieval is by primary key. This makes distribution across machines particularly easy since everything can be split by the primary key.</p>
+
+<p>####Kyoto Cabinet:</p>
+
+<p>Kyoto Cabinet is a library of routines for managing a database. The database is a simple data file containing records, each is a pair of a key and a value. Every key and value is serial bytes with variable length. Both binary data and character string can be used as a key and a value. Each key must be unique within a database. There is neither concept of data tables nor data types. Records are organized in hash table or B+ tree.</p>
+
+<p>#####Feature</p>
+
+<p>The database is a simple data file containing records, each is a pair of a key and a value. Every key and value is serial bytes with variable length. Both binary data and character string can be used as a key and a value. Each key must be unique within a database. There is neither concept of data tables nor data types. Records are organized in hash table or B+ tree.</p>
+
+<p>#####Operations:</p>
+
+<p>The following access methods are provided to the database: storing a record with a key and a value, deleting a record by a key, retrieving a record by a key. Moreover, traversal access to every key are provided.</p>
+
+<p>####Redis</p>
+
+<p>Redis is an open source, advanced key-value store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets and sorted sets.
+You can run atomic operations on these types, like appending to a string; incrementing the value in a hash; pushing to a list; computing set intersection, union and difference; or getting the member with highest ranking in a sorted set.</p>
+
+<p>#####Feature</p>
+
+<p>Redis is an open source, advanced key-value store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets and sorted sets.
+You can run atomic operations on these types, like appending to a string; incrementing the value in a hash; pushing to a list; computing set intersection, union and difference; or getting the member with highest ranking in a sorted set.</p>
+
+<p>#####Data Model:</p>
+
+<p>As you already probably know Redis is not a plain key-value store, actually it is a data structures server, supporting different kind of values. That is, you can&rsquo;t just set strings as values of keys. All the following data types are supported as values:</p>
+
+<ul>
+<li>Binary-safe strings.</li>
+<li>Lists of binary-safe strings.</li>
+<li>Sets of binary-safe strings, that are collection of unique unsorted elements. You can think at this as a Ruby hash where all the keys are set to the &lsquo;true&rsquo; value.</li>
+<li>Sorted sets, similar to Sets but where every element is associated to a floating number score. The elements are taken sorted by score. You can think of this as Ruby hashes where the key is the element and the value is the score, but where elements are always taken in order without requiring a sorting operation.</li>
+</ul>
+
+<p>####Limitations:</p>
+
+<p>Redis meets the needs for Registrar very well since its support on list of value and its high performance on IO operation. But it’s written in C, it will require some work to make it start when delivering to users in the MOHO framework.</br></p>
+
+<p>In the three Key-value type databases, Voldemort is a more distributed Key-value NoSQL database implementation than the other two, and it has a very simple API to manipulate the database.</p>
+
+<p>##Conclusion:
+MongoDB is document oriented and very good at large amount of data searching. It is a good option for document store.</br>
+Redis will be good choice for K-V mapping don’t scale too large since it has very good performance on concurrent IO and support list type value. Voldemort will be good choice in a large-scale deployment for its high available design and simple API.</br>
+But Redis and Voldemort are Key-value databases that do not have enough function for the future complicated data migrated from RDBMS requirement.</br>
+So finally we choose Cassadra. It is a mixed type database, which has Dynamo’s distributed Key-value feature, and also have the rich function from the column feature like Google’s Bigtable. It is suitable for the situation both usecases in the our product. And it’s very mature on production, a open-source Java project and for its HA and HS in large scale.</p>
+
+<p>##Reference</p>
+
+<ol>
+<li>SQL vs. NoSQL <a href="http://www.linuxjournal.com/article/10770?page=0,0">http://www.linuxjournal.com/article/10770?page=0,0</a></br></li>
+<li>NoSQL数据库探讨之一 － 为什么要用非关系数据库？ <a href="http://robbin.iteye.com/blog/524977">http://robbin.iteye.com/blog/524977</a></br></li>
+<li>NoSQL databases <a href="http://nosql-database.org/">http://nosql-database.org/</a></br></li>
+<li>Visual Guide to NoSQL Systems <a href="http://blog.nahurst.com/visual-guide-to-nosql-systems">http://blog.nahurst.com/visual-guide-to-nosql-systems</a></br></li>
+<li>Eventually consistence <a href="http://www.allthingsdistributed.com/2008/12/eventually_consistent.html">http://www.allthingsdistributed.com/2008/12/eventually_consistent.html</a></br></li>
+<li>Brewer&rsquo;s CAP Theorem <a href="http://www.julianbrowne.com/article/viewer/brewers-cap-theorem">http://www.julianbrowne.com/article/viewer/brewers-cap-theorem</a></br></li>
+<li>Cassandra <a href="http://cassandra.apache.org/">http://cassandra.apache.org/</a></br></li>
+<li>Cassandra data model <a href="http://wiki.apache.org/cassandra/DataModel">http://wiki.apache.org/cassandra/DataModel</a></br></li>
+<li>Cassandra Architecture <a href="http://wiki.apache.org/cassandra/ArchitectureOverview">http://wiki.apache.org/cassandra/ArchitectureOverview</a></br></li>
+<li>Cassandra Embedding <a href="http://wiki.apache.org/cassandra/Embedding">http://wiki.apache.org/cassandra/Embedding</a></br></li>
+<li>Running Cassandra as an embedded service <a href="http://prettyprint.me/2010/02/14/running-cassandra-as-an-embedded-service/">http://prettyprint.me/2010/02/14/running-cassandra-as-an-embedded-service/</a></br></li>
+<li>HBase <a href="http://hbase.apache.org/">http://hbase.apache.org/</a></br></li>
+<li>HBase vs. Cassandra NoSQL battle <a href="http://www.roadtofailure.com/2009/10/29/hbase-vs-cassandra-nosql-battle/">http://www.roadtofailure.com/2009/10/29/hbase-vs-cassandra-nosql-battle/</a></br></li>
+<li>HBase vs. Cassandra : why we moved <a href="http://ria101.wordpress.com/2010/02/24/hbase-vs-cassandra-why-we-moved/">http://ria101.wordpress.com/2010/02/24/hbase-vs-cassandra-why-we-moved/</a></br></li>
+<li>Voldemort <a href="http://project-voldemort.com/">http://project-voldemort.com/</a></br></li>
+<li>Voldemort design <a href="http://project-voldemort.com/design.php">http://project-voldemort.com/design.php</a></br></li>
+<li>Dynamo: Amazon&rsquo;s Highly Available Key-Value Store <a href="http://s3.amazonaws.com/AllThingsDistributed/sosp/amazon-dynamo-sosp2007.pdf">http://s3.amazonaws.com/AllThingsDistributed/sosp/amazon-dynamo-sosp2007.pdf</a></br></li>
+<li>MongoDB <a href="http://www.mongodb.org/">http://www.mongodb.org/</a></br></li>
+<li>CouchDB <a href="http://couchdb.apache.org/">http://couchdb.apache.org/</a></br></li>
+<li>Redis <a href="http://redis.io/">http://redis.io/</a></br></li>
+<li>Tokyo Cabinet <a href="http://fallabs.com/tokyocabinet/">http://fallabs.com/tokyocabinet/</a></br></li>
+<li>Fundamental Specifications of Kyoto Cabinet <a href="http://fallabs.com/kyotocabinet/spex.html#features">http://fallabs.com/kyotocabinet/spex.html#features</a></br></li>
+<li>MemcacheDB <a href="http://memcachedb.org/">http://memcachedb.org/</a></br></li>
+<li>Database management system choices – beyond relational <a href="http://www.dbms2.com/2008/02/15/non-relational-database-management/">http://www.dbms2.com/2008/02/15/non-relational-database-management/</a></br></li>
+<li>NoSQL and RDBMS – choose your weapon <a href="http://www.servicestack.net/mythz_blog/?p=129">http://www.servicestack.net/mythz_blog/?p=129</a></br></li>
+<li>Streamy Development blog <a href="http://devblog.streamy.com/">http://devblog.streamy.com/</a></br></li>
+<li>Google Code University <a href="http://code.google.com/edu/parallel/mapreduce-tutorial.html">http://code.google.com/edu/parallel/mapreduce-tutorial.html</a></br></li>
+<li>Dynamo <a href="http://en.wikipedia.org/wiki/Dynamo_%28storage_system%29">http://en.wikipedia.org/wiki/Dynamo_%28storage_system%29</a></br></li>
+<li>BigTable <a href="http://en.wikipedia.org/wiki/Bigtable">http://en.wikipedia.org/wiki/Bigtable</a></br></li>
+<li>Hadoop <a href="http://en.wikipedia.org/wiki/Hadoop">http://en.wikipedia.org/wiki/Hadoop</a></br></li>
+<li>Thrift <a href="http://thrift.apache.org/">http://thrift.apache.org/</a></br></li>
+</ol>
+
+<p>##Appendix NoSQL Database setup and programming guide</p>
+
+<p>###Cassadra:</p>
+
+<p>####Setup</p>
+
+<p>Cassandra is meant to run on a cluster of nodes, but will run equally well on a single machine. Download a binary distribution. The distribution&rsquo;s sample configuration conf/cassandra.yaml contains reasonable defaults for single node operation, but you will need to make sure that the paths exist for data_file_directories, commitlog_directory, and saved_caches_directory. Additionally, take a minute now to look over the logging configuration in conf/log4j.properties and make sure that directories exist for the configured log file(s) as well.</p>
+
+<p>Some people running OS X have trouble getting Java 6 to work. If you&rsquo;ve kept up with Apple&rsquo;s updates, Java 6 should already be installed (it comes in Mac OS X 10.5 Update 1). Unfortunately, Apple does not default to using it. What you have to do is change your JAVA_HOME environment setting to <em>/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home</em> and add <em>/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home/bin</em> to the beginning of your PATH.</p>
+
+<p>And now for the moment of truth, start up Cassandra by invoking bin/cassandra -f from the command line3. The service should start in the foreground and log gratuitously to standard-out.</p>
+
+<p>####Programming</p>
+
+<p>The recommended way to communicate with Cassandra in your application is to use a higher-level client. These provide programming language specific APIs for talking to Cassandra in a variety of languages. The details will vary depending on programming language and client, but in general using a higher-level client will mean that you have to write less code and get several features for free that you would otherwise have to write yourself.  Using Hector for example:
+{% codeblock lang:java%}
+package com.riptano.cassandra.hector.example;</p>
+
+<p>import me.prettyprint.cassandra.serializers.StringSerializer;
+import me.prettyprint.hector.api.Cluster;
+import me.prettyprint.hector.api.Keyspace;
+import me.prettyprint.hector.api.beans.HColumn;
+import me.prettyprint.hector.api.exceptions.HectorException;
+import me.prettyprint.hector.api.factory.HFactory;
+import me.prettyprint.hector.api.mutation.Mutator;
+import me.prettyprint.hector.api.query.ColumnQuery;
+import me.prettyprint.hector.api.query.QueryResult;</p>
+
+<p>/**
+ * Inserts the value &ldquo;John&rdquo; under the Column &ldquo;first&rdquo; for the
+ * key &ldquo;jsmith&rdquo; in the Standard1 ColumnFamily
+ *
+ * To run this example from maven:
+ * mvn -e exec:java -Dexec.mainClass=&ldquo;com.riptano.cassandra.hector.example.InsertSingleColumn&rdquo;
+ *
+ * @author zznate
+ *
+ */
+public class InsertSingleColumn {</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">private static StringSerializer stringSerializer = StringSerializer.get();
+
+public static void main(String[] args) throws Exception {
+    Cluster cluster = HFactory.getOrCreateCluster(&#34;TestCluster&#34;, &#34;localhost:9160&#34;);
+
+    Keyspace keyspaceOperator = HFactory.createKeyspace(&#34;Keyspace1&#34;, cluster);
+    try {
+        Mutator&lt;String&gt; mutator = HFactory.createMutator(keyspaceOperator, StringSerializer.get());
+        mutator.insert(&#34;jsmith&#34;, &#34;Standard1&#34;, HFactory.createStringColumn(&#34;first&#34;, &#34;John&#34;));
+
+        ColumnQuery&lt;String, String, String&gt; columnQuery = HFactory.createStringColumnQuery(keyspaceOperator);
+        columnQuery.setColumnFamily(&#34;Standard1&#34;).setKey(&#34;jsmith&#34;).setName(&#34;first&#34;);
+        QueryResult&lt;HColumn&lt;String, String&gt;&gt; result = columnQuery.execute();
+
+        System.out.println(&#34;Read HColumn from cassandra: &#34; + result.get());            
+        System.out.println(&#34;Verify on CLI with:  get Keyspace1.Standard1[&#39;jsmith&#39;] &#34;);
+
+    } catch (HectorException e) {
+        e.printStackTrace();
+    }
+    cluster.getConnectionManager().shutdown();
+}</pre></div>
+<p>}
+{% endcodeblock %}</p>
+
+<p>###HBase</p>
+
+<p>####Setup:</p>
+
+<p>Download and unpack the latest stable release. Click on the folder named stable and then download the file that ends in .tar.gz to your local filesystem; e.g. hbase-0.91.0-SNAPSHOT.tar.gz. Decompress and untar your download and then change into the unpacked directory.
+{% codeblock lang:bash%}
+ $ tar xfz hbase-0.91.0-SNAPSHOT.tar.gz
+ $ cd hbase-0.91.0-SNAPSHOT
+{% endcodeblock %}
+At this point, you are ready to start HBase. But before starting it, you might want to edit conf/hbase-site.xml and set the directory you want HBase to write to, hbase.rootdir.
+{% codeblock lang:xml%}
+ &lt;?xml version=&ldquo;1.0&rdquo;?&gt;
+ &lt;?xml-stylesheet type=&ldquo;text/xsl&rdquo; href=&ldquo;configuration.xsl&rdquo;?&gt;
+<configuration>
+   <property>
+     <name>hbase.rootdir</name>
+     <value>file:///DIRECTORY/hbase</value>
+   </property>
+ </configuration><br />
+{% endcodeblock %}</p>
+
+<p>Replace DIRECTORY in the above with a path to a directory where you want HBase to store its data. By default, hbase.rootdir is set to /tmp/hbase-${user.name} which means you&rsquo;ll lose all your data whenever your server reboots (Most operating systems clear /tmp on restart).
+$ ./bin/start-hbase.sh starting Master, logging to logs/hbase-user-master-example.org.out</p>
+
+<p>You should now have a running standalone HBase instance. In standalone mode, HBase runs all daemons in the the one JVM; i.e. both the HBase and ZooKeeper daemons. HBase logs can be found in the logs subdirectory. Check them out especially if HBase had trouble starting.</p>
+
+<p>####Programming</p>
+
+<p>{% codeblock lang:java%}
+import java.io.IOException;
+import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.Scanner;
+import org.apache.hadoop.hbase.io.BatchUpdate;
+import org.apache.hadoop.hbase.io.Cell;
+import org.apache.hadoop.hbase.io.RowResult;
+public class MyClient {
+public static void main(String args[]) throws IOException {
+    // You need a configuration object to tell the client where to connect.
+    // But don&rsquo;t worry, the defaults are pulled from the local config file.
+    HBaseConfiguration config = new HBaseConfiguration();
+    // This instantiates an HTable object that connects you to the &ldquo;myTable&rdquo;
+    // table.
+    HTable table = new HTable(config, &ldquo;myTable&rdquo;);
+    // To do any sort of update on a row, you use an instance of the BatchUpdate
+    // class. A BatchUpdate takes a row and optionally a timestamp which your
+    // updates will affect.
+    BatchUpdate batchUpdate = new BatchUpdate(&ldquo;myRow&rdquo;);
+    // The BatchUpdate#put method takes a Text that describes what cell you want
+    // to put a value into, and a byte array that is the value you want to
+    // store. Note that if you want to store strings, you have to getBytes()
+    // from the string for HBase to understand how to store it. (The same goes
+    // for primitives like ints and longs and user-defined classes - you must
+    // find a way to reduce it to bytes.)
+    batchUpdate.put(&ldquo;myColumnFamily:columnQualifier1&rdquo;, &ldquo;columnQualifier1 value!&rdquo;.getBytes());
+    // Deletes are batch operations in HBase as well.
+    batchUpdate.delete(&ldquo;myColumnFamily:cellIWantDeleted&rdquo;);
+    // Once you&rsquo;ve done all the puts you want, you need to commit the results.
+    // The HTable#commit method takes the BatchUpdate instance you&rsquo;ve been
+    // building and pushes the batch of changes you made into HBase.
+    table.commit(batchUpdate);
+    // Now, to retrieve the data we just wrote. The values that come back are
+    // Cell instances. A Cell is a combination of the value as a byte array and
+    // the timestamp the value was stored with. If you happen to know that the
+    // value contained is a string and want an actual string, then you must
+    // convert it yourself.
+    Cell cell = table.get(&ldquo;myRow&rdquo;, &ldquo;myColumnFamily:columnQualifier1&rdquo;);
+    String valueStr = new String(cell.getValue());</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">// Sometimes, you won&#39;t know the row you&#39;re looking for. In this case, you
+// use a Scanner. This will give you cursor-like interface to the contents
+// of the table.
+Scanner scanner = 
+  // we want to get back only &#34;myColumnFamily:columnQualifier1&#34; when we iterate
+  table.getScanner(new String[]{&#34;myColumnFamily:columnQualifier1&#34;});
+
+
+// Scanners in HBase 0.2 return RowResult instances. A RowResult is like the
+// row key and the columns all wrapped up in a single interface. 
+// RowResult#getRow gives you the row key. RowResult also implements 
+// Map, so you can get to your column results easily. 
+
+// Now, for the actual iteration. One way is to use a while loop like so:
+RowResult rowResult = scanner.next();
+
+while(rowResult != null) {
+  // print out the row we found and the columns we were looking for
+  System.out.println(&#34;Found row: &#34; + new String(rowResult.getRow()) + &#34; with value: &#34; +
+   rowResult.get(&#34;myColumnFamily:columnQualifier1&#34;.getBytes()));
+
+  rowResult = scanner.next();
+}
+
+// The other approach is to use a foreach loop. Scanners are iterable!
+for (RowResult result : scanner) {
+  // print out the row we found and the columns we were looking for
+  System.out.println(&#34;Found row: &#34; + new String(result.getRow()) + &#34; with value: &#34; +
+   result.get(&#34;myColumnFamily:columnQualifier1&#34;.getBytes()));
+}
+
+// Make sure you close your scanners when you are done!
+scanner.close();</pre></div>
+<p>}
+}
+{% endcodeblock %}</p>
+
+<p>###Voldemort:</p>
+
+<p>####Setup</p>
+
+<ul>
+<li><p>Step 1: Download the code
+Download either a recent stable release or, for those who like to live more dangerously, the up-to-the-minute build from the build server.</p></li>
+
+<li><p>Step 2: Start single node cluster
+{% codeblock lang:bash%}
+&gt; bin/voldemort-server.sh config/single_node_cluster &gt; /tmp/voldemort.log &amp;
+{% endcodeblock %}</p></li>
+
+<li><p>Step 3: Start commandline test client and do some operations</p></li>
+</ul>
+
+<p>{% codeblock lang:bash%}
+  &gt; bin/voldemort-shell.sh test tcp://localhost:6666
+  Established connection to test via tcp://localhost:6666
+  &gt; put &ldquo;hello&rdquo; &ldquo;world&rdquo;
+  &gt; get &ldquo;hello&rdquo;   version(0:1): &ldquo;world&rdquo;
+  &gt; delete &ldquo;hello&rdquo;
+  &gt; get &ldquo;hello&rdquo;   null
+  &gt; exit  k k thx bye.
+{% endcodeblock %}</p>
+
+<p>####Programming</p>
+
+<p><strong>Client</strong>
+Here is an example showing how to connect to a store as a client to do reads and writes from Java:
+{% codeblock lang:java%}
+String bootstrapUrl = &ldquo;tcp://localhost:6666&rdquo;;
+StoreClientFactory factory = new SocketStoreClientFactory(new ClientConfig().setBootstrapUrls(bootstrapUrl));
+// create a client that executes operations on a single store
+StoreClient client = factory.getStoreClient(&ldquo;my_store_name&rdquo;);
+{% endcodeblock %}
+After initializing the store client for every store once we can reuse it to run our queries as follows:
+{% codeblock lang:java%}
+// do some random pointless operations
+  Versioned value = client.get(&ldquo;some_key&rdquo;);
+  value.setObject(&ldquo;some_value&rdquo;);
+  client.put(&ldquo;some_key&rdquo;, value);
+ {% endcodeblock %}</p>
+
+<p>Note that StoreClient is just an interface, so for the purpose of unit testing we can completely mock the storage layer. This is something that is essentially impossible to do with a normal relational db since sql is the interface and it is vendor specific.</p>
+
+<p><strong>Server</strong></p>
+
+<p>There are three methods for using the server:
+1. Start from the command line
+You must first build the jar file using ant, as described above, then do the following:
+{% codeblock lang:bash%}
+$ VOLDEMORT_HOME=&lsquo;/path/to/voldemort&rsquo;
+$ cd $VOLDEMORT_HOME
+$ ./bin/voldemort-server.sh
+ {% endcodeblock %}</p>
+
+<p>Alternately we can give VOLDEMORT_HOME on the command line and avoid having to set an environment variable
+{% codeblock lang:bash%}
+$ ./bin/voldemort-server.sh /path/to/voldemort
+ {% endcodeblock %}
+2. Embedded Server
+You can instantiate the server directly in your code.
+{% codeblock lang:java%}
+VoldemortConfig config = VoldemortConfig.loadFromEnvironmentVariable();
+VoldemortServer server = new VoldemortServer(config);
+server.start();
+ {% endcodeblock %}
+3. Deploy as a war
+To do this build the war file using the
+{% codeblock lang:bash%}
+ant war
+ {% endcodeblock %}
+target and deploy via whatever mechanism your servlet container supports.</p>
+
+<p>####Kyoto Cabinet:</p>
+
+<p>#####Setup</p>
+
+<p>Install the latest version of Kyoto Cabinet beforehand and get the package of the Java binding of Kyoto Cabinet. JDK 6 or later is also required.
+Enter the directory of the extracted package then perform installation.
+{% codeblock lang:bash%}
+./configure
+ make
+ make check
+ su make install
+ {% endcodeblock %}
+When a series of work finishes, the JAR file <code>kyotocabinet.jar' and the shared object files</code>libjkyotocabinet.so&rsquo; and so on are installed under <code>/usr/local/lib'.
+Let the class search path include</code>/usr/local/lib/kyotocabinet.jar&rsquo; and let the library search path include <code>/usr/local/lib'.
+{% codeblock lang:bash%}
+CLASSPATH=&quot;$CLASSPATH:/usr/local/lib/kyotocabinet.jar&quot; LD_LIBRARY_PATH=&quot;$LD_LIBRARY_PATH:/usr/local/lib&quot; export CLASSPATH LD_LIBRARY_PATH 
+{% endcodeblock %}
+The above settings can be specified by options of the runtime command.
+{% codeblock lang:bash%}
+java -cp .:kyotocabinet.jar -Djava.library.path=.:/usr/local/lib FooBarBaz ... 
+{% endcodeblock %}
+All symbols of Kyoto Cabinet are defined in the package</code>kyotocabinet&rsquo;. You can access them without any prefix by importing the package.
+{% codeblock lang:java%}
+import kyotocabinet.*;
+{% endcodeblock %}</p>
+
+<p>#####Programming</p>
+
+<p>The following code is a typical example to use a database.
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">import kyotocabinet.*;  
+public class KCDBEX1 {   
+public static void main(String[] args) {
+      // create the object
+     DB db = new DB();
+      // open the database
+     <span style="font-weight:bold">if</span> (!db.open(<span style="font-style:italic">&#34;casket.kch&#34;</span>, DB.OWRITER | DB.OCREATE)){
+       System.err.println(<span style="font-style:italic">&#34;open error: &#34;</span> + db.error());
+     }
+      // store records
+     <span style="font-weight:bold">if</span> (!db.set(<span style="font-style:italic">&#34;foo&#34;</span>, <span style="font-style:italic">&#34;hop&#34;</span>) ||
+         !db.set(<span style="font-style:italic">&#34;bar&#34;</span>, <span style="font-style:italic">&#34;step&#34;</span>) ||
+         !db.set(<span style="font-style:italic">&#34;baz&#34;</span>, <span style="font-style:italic">&#34;jump&#34;</span>)){
+       System.err.println(<span style="font-style:italic">&#34;set error: &#34;</span> + db.error());
+     }
+      // retrieve records
+     String value = db.get(<span style="font-style:italic">&#34;foo&#34;</span>);
+     <span style="font-weight:bold">if</span> (value != null){
+       System.out.println(value);
+     } <span style="font-weight:bold">else</span> {
+       System.err.println(<span style="font-style:italic">&#34;set error: &#34;</span> + db.error());
+     }
+      // traverse records
+     Cursor cur = db.cursor();
+     cur.jump();
+     String[] rec;
+     <span style="font-weight:bold">while</span> ((rec = cur.get_str(true)) != null) {
+       System.out.println(rec[0] + <span style="font-style:italic">&#34;:&#34;</span> + rec[1]);
+     }
+     cur.disable();
+      // close the database
+     <span style="font-weight:bold">if</span>(!db.close()){
+       System.err.println(<span style="font-style:italic">&#34;close error: &#34;</span> + db.error());
+     }
+    }
+ } </code></pre></div></p>
+
+<p>####Redis</p>
+
+<p>#####Setup</p>
+
+<p>Download, extract and compile Redis with:
+{% codeblock lang:bash%}
+ $ wget <a href="http://redis.googlecode.com/files/redis-2.2.12.tar.gz">http://redis.googlecode.com/files/redis-2.2.12.tar.gz</a>
+ $ tar xzf redis-2.2.12.tar.gz
+ $ cd redis-2.2.12
+ $ make
+{% endcodeblock %}</p>
+
+<p>#####Programming</p>
+
+<p>Many Java clients, using Jedis for example:
+{% codeblock lang:java%}
+ Jedis jedis = new Jedis(&ldquo;localhost&rdquo;);
+ jedis.set(&ldquo;foo&rdquo;, &ldquo;bar&rdquo;);
+ String value = jedis.get(&ldquo;foo&rdquo;);
+{% endcodeblock %}</p>
+
+<p>###MongoDB
+####Setup
+64-bit binaries
+{% codeblock lang:bash%}
+$ curl <a href="http://downloads.mongodb.org/osx/mongodb-osx-x86_64-x.y.z.tgz">http://downloads.mongodb.org/osx/mongodb-osx-x86_64-x.y.z.tgz</a> &gt; mongo.tgz $ tar xzf mongo.tgz
+{% endcodeblock %}
+Replace x.y.z with the current stable version.
+Create a data directory
+By default MongoDB will store data in /data/db, but it won&rsquo;t automatically create that directory. To create it, do:
+{% codeblock lang:bash%}
+$ mkdir -p /data/db
+{% endcodeblock %}
+You can also tell MongoDB to use a different data directory, with the &ndash;dbpath option.
+Run and connect to the server
+First, start the MongoDB server in one terminal:
+{% codeblock lang:bash%}
+$ ./mongodb-xxxxxxx/bin/mongod
+{% endcodeblock %}
+In a separate terminal, start the shell, which will connect to localhost by default:
+{% codeblock lang:bash%}
+$ ./mongodb-xxxxxxx/bin/mongo &gt; db.foo.save( { a : 1 } ) &gt; db.foo.find()
+{% endcodeblock %}
+Congratulations, you&rsquo;ve just saved and retrieved your first document with MongoDB!</p>
+
+<p>####Programming
+{% codeblock lang:java%}
+ import com.mongodb.Mongo;
+ import com.mongodb.DB;
+ import com.mongodb.DBCollection;
+ import com.mongodb.BasicDBObject;
+ import com.mongodb.DBObject;
+ import com.mongodb.DBCursor;</p>
+
+<p>Mongo m = new Mongo();
+ // or Mongo m = new Mongo( &ldquo;localhost&rdquo; );
+ // or Mongo m = new Mongo( &ldquo;localhost&rdquo; , 27017 );
+ DB db = m.getDB( &ldquo;mydb&rdquo; );
+ BasicDBObject doc = new BasicDBObject();
+ doc.put(&ldquo;name&rdquo;, &ldquo;MongoDB&rdquo;);
+ doc.put(&ldquo;type&rdquo;, &ldquo;database&rdquo;);
+ doc.put(&ldquo;count&rdquo;, 1);
+ BasicDBObject info = new BasicDBObject();
+ info.put(&ldquo;x&rdquo;, 203);
+ info.put(&ldquo;y&rdquo;, 102);
+ doc.put(&ldquo;info&rdquo;, info);
+ coll.insert(doc);
+{% endcodeblock %}</p>
+
+      </div>
+
+      <footer>
+        <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "seanguo" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      </footer>
+    </article>
+
+    
+  </section>
+
+      </div>
+
+      <footer class="footer">
+  <section class="container">
+    
+      <p>Still water runs deep.</p>
+    
+     © 2019
+    
+       · 
+       <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/">Coder</a>.
+    
+    
+  </section>
+</footer>
+
+    </main>
+
+    
+
+  </body>
+
+</html>

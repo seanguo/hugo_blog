@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="author" content="Sean Guo">
+    <meta name="description" content="Sean Guo&#39;s personal website">
+    <meta name="keywords" content="blog,developer,personal">
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Shell&#43;Ruby"/>
+<meta name="twitter:description" content="最近公司产品的新特性开发的不是那么多了，所以自己有时间闲下来偿还一下以前欠下的技术债。公司的发版流程是自己一步步实现出来的，整体结构是由一个个的shell脚本来实现的。把发版的每一个步骤拆分为独立的一个个脚本，这样流程变化了可以通过脚本组合的变化来适应变化。毕竟能够维持不变的东西永远是变化。
+以前的问题是由于当时开发的紧迫性，加上自己对脚本的不太重视，导致开发的这些脚本整体结构还算好，但是就是里面会有很多重复的常量在里面。这里的常量就是要发版的各个组件的名字，由于目前产品组件的不确定性，经常会添加或者删除一个组件，目前的缺点就是添加或者删除一个组件的时候需要更改多个脚本，违背了SPOT原则，会很容易遗落下本应同步修改的脚本。
+这次自己有时间了决定把这些常量提取出去作为一个配置文件单独存在，思路是简单而直接的，但是由于shell脚本的局限性，把组件名字提出去还算可行，但是我想要对每个组件加上单独的其他配置的话好像比较绕。以以下脚本为例来说： {% codeblock lang:bash%} for repo in &ldquo;COM_A COM_B COM_C&rdquo; do cd $repo if [ $repo == &ldquo;COM_B&rdquo; cd modules fi mvn setVersion=$newVersion done {% endcodeblock %} 这个脚本是迭代每个组件，然后去修改pom.xml里面的version改为要发版的version，问题有的组件的parent的pom.xml没在根目录下，需要切换到对应的目录才能进行操作。
+我们可以很容易就把 &ldquo;COM_A COM_B COM_C&rdquo; 提取出去， 例如： {% codeblock lang:bash%} export all_repos=&ldquo;COM_A COM_B COM_C&rdquo; {% endcodeblock %}
+这样脚本就变成了 {% codeblock lang:bash%} for repo in $all_repos do cd $repo if [ $repo == &ldquo;oneRepo&rdquo; cd modules fi mvn versions:set -DnewVersion=$newVersion done {% endcodeblock %}"/>
+
+
+    <base href="https://seanguo.github.io/posts/2017-05-28-shell-plus-ruby/">
+    <title>
+  Shell&#43;Ruby · Sean&#39;s Blog
+</title>
+
+    <link rel="canonical" href="https://seanguo.github.io/posts/2017-05-28-shell-plus-ruby/">
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700|Merriweather:300,700|Source+Code+Pro:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css" integrity="sha256-oSrCnRYXvHG31SBifqP2PM1uje7SJUyX0nTwO2RJV54=" crossorigin="anonymous" />
+
+    
+      
+      
+      <link rel="stylesheet" href="https://seanguo.github.io/css/coder.min.8881182b3ec36ffd9c735306f7e16ce9b1129ebc650e069e7c4114827e9d9b23.css" integrity="sha256-iIEYKz7Db/2cc1MG9&#43;Fs6bESnrxlDgaefEEUgn6dmyM=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+
+    
+      <link rel="stylesheet" href="https://seanguo.github.io/css/custom.css">
+    
+
+    <link rel="icon" type="image/png" href="https://seanguo.github.io/img/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://seanguo.github.io/img/favicon-16x16.png" sizes="16x16">
+
+    
+
+    <meta name="generator" content="Hugo 0.54.0" />
+  </head>
+
+  <body class=" ">
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="https://seanguo.github.io">
+      Sean&#39;s Blog
+    </a>
+    <input type="checkbox" id="menu-toggle" />
+    <label class="menu-button float-right" for="menu-toggle"><i class="fas fa-bars"></i></label>
+    <ul class="navigation-list">
+      
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://seanguo.github.io/posts/">Blog</a>
+          </li>
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://seanguo.github.io/about/">About</a>
+          </li>
+        
+      
+      
+    </ul>
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">Shell&#43;Ruby</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2017-05-28T20:25:34&#43;08:00'>
+                May 28, 2017
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              
+            </span>
+          </div>
+          
+          
+        </div>
+      </header>
+
+      <div>
+        
+
+<p>最近公司产品的新特性开发的不是那么多了，所以自己有时间闲下来偿还一下以前欠下的技术债。公司的发版流程是自己一步步实现出来的，整体结构是由一个个的shell脚本来实现的。把发版的每一个步骤拆分为独立的一个个脚本，这样流程变化了可以通过脚本组合的变化来适应变化。毕竟能够维持不变的东西永远是<strong>变化</strong>。</p>
+
+<p>以前的问题是由于当时开发的紧迫性，加上自己对脚本的不太重视，导致开发的这些脚本整体结构还算好，但是就是里面会有很多重复的常量在里面。这里的常量就是要发版的各个组件的名字，由于目前产品组件的不确定性，经常会添加或者删除一个组件，目前的缺点就是添加或者删除一个组件的时候需要更改多个脚本，违背了SPOT原则，会很容易遗落下本应同步修改的脚本。</p>
+
+<p>这次自己有时间了决定把这些常量提取出去作为一个配置文件单独存在，思路是简单而直接的，但是由于shell脚本的局限性，把组件名字提出去还算可行，但是我想要对每个组件加上单独的其他配置的话好像比较绕。以以下脚本为例来说：
+{% codeblock lang:bash%}
+for repo in &ldquo;COM_A COM_B COM_C&rdquo;
+do
+  cd $repo
+  if [ $repo == &ldquo;COM_B&rdquo;
+    cd modules
+  fi
+  mvn setVersion=$newVersion
+done
+{% endcodeblock %}
+这个脚本是迭代每个组件，然后去修改pom.xml里面的version改为要发版的version，问题有的组件的parent的pom.xml没在根目录下，需要切换到对应的目录才能进行操作。</p>
+
+<p>我们可以很容易就把 &ldquo;COM_A COM_B COM_C&rdquo; 提取出去， 例如：
+{% codeblock lang:bash%}
+export all_repos=&ldquo;COM_A COM_B COM_C&rdquo;
+{% endcodeblock %}</p>
+
+<p>这样脚本就变成了
+{% codeblock lang:bash%}
+for repo in $all_repos
+do
+  cd $repo
+  if [ $repo == &ldquo;oneRepo&rdquo;
+    cd modules
+  fi
+  mvn versions:set -DnewVersion=$newVersion
+done
+{% endcodeblock %}</p>
+
+<p>问题是这个modules目录怎么配置出去，想过这样去做：
+{% codeblock lang:bash%}
+export COM_B_pom_path=modules
+{% endcodeblock %}</p>
+
+<p>但是问题是这只是一个配置而已，因为发版流程还涉及到其他的目录，像我们的组件用的Chef的cookbook来配置安装，所以我还要配置这个cookbook的路径，然后我们的cookbook用的test kitchen来测试，所以还要配置test kitchen的测试文件所在的路径，这样会有很多export，可读性和可维护性都很差。</p>
+
+<p>根据以往的经验，所有复杂的问题理论上都可以经过抽象或者添加中间层的方式来简化实现。这里我想到了用Ruby来生成shell需要的export全局变量，然后既然用到Ruby了很自然的配置文件就用到了YAML。这种配置文件既简洁又保持了很好的可读性。下面就是就是yaml关于这次修改的部分样例：</p>
+
+<h2 id="codeblock-lang-ruby">{% codeblock lang:ruby%}</h2>
+
+<p>components
+  COM_A
+    pom: /
+    cookbook: cookbook
+    test_kitchen: /
+  COM_B
+    pom: modules
+    cookbook: cookbook
+    test_kitchen: /
+  COM_C
+    pom: /
+    cookbook: cookbook
+    test_kitchen: /
+&hellip;
+{% endcodeblock %}</p>
+
+<p>这样我们可以很容易的实现一段Ruby代码来生成这个shell的环境文件：
+{% codeblock lang:yaml%}
+require &ldquo;yaml&rdquo;</p>
+
+<p>def all_repo_list(yaml)
+    return yaml.keys.join(&rdquo; &ldquo;)
+end</p>
+
+<p>def all_cookbook_dirs(yaml)
+    all_dir_for(yaml, &ldquo;cookbook&rdquo;)
+end</p>
+
+<p>def all_pom_dirs(yaml)
+    all_dir_for(yaml, &ldquo;pom&rdquo;)
+end</p>
+
+<p>def all_test_kitchen_dirs(yaml)
+    all_dir_for(yaml, &ldquo;test_kitchen&rdquo;)
+end</p>
+
+<p>def all_dir_for(yaml, type)
+    dirs = []
+    yaml.each do |k, v|
+        next if v.nil? || v[type].nil?
+        subfolder = v[type]
+        dirs &lt;&lt; &ldquo;#{k}#{subfolder}&rdquo;
+    end
+    dirs.join(&rdquo; &ldquo;)
+end</p>
+
+<p>current_dir = File.dirname(<strong>FILE</strong>)
+yaml = YAML.load_file(&ldquo;#{current_dir}/config.yml&rdquo;)
+all_components = yaml[&ldquo;components&rdquo;]</p>
+
+<p>text = []
+text &lt;&lt; &ldquo;export all_repos=\&ldquo;#{all_repo_list(all_components)}\&ldquo;&rdquo;
+text &lt;&lt; &ldquo;export all_cookbook_dirs=\&ldquo;#{all_cookbook_dirs(all_components)}\&ldquo;&rdquo;
+text &lt;&lt; &ldquo;export all_pom_dirs=\&ldquo;#{all_pom_dirs(all_components)}\&ldquo;&rdquo;
+text &lt;&lt; &ldquo;export all_test_kitchen_dirs=\&ldquo;#{all_test_kitchen_dirs(all_components)}\&ldquo;&rdquo;</p>
+
+<p>File.open(&ldquo;#{current_dir}/config&rdquo;, &ldquo;w&rdquo;) {|file| file.write(text.join(&rdquo;\n&rdquo;)) }<br />
+{% endcodeblock %}</p>
+
+<p>然后在脚本执行前source一下这个生成的文件<strong>config</strong>即可。</p>
+
+      </div>
+
+      <footer>
+        <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "seanguo" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      </footer>
+    </article>
+
+    
+  </section>
+
+      </div>
+
+      <footer class="footer">
+  <section class="container">
+    
+      <p>Still water runs deep.</p>
+    
+     © 2019
+    
+       · 
+       <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/">Coder</a>.
+    
+    
+  </section>
+</footer>
+
+    </main>
+
+    
+
+  </body>
+
+</html>
