@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Sean&#39;s Blog</title>
-    <link>https://seanguo.github.io/posts/</link>
+    <link>https://seanguo.github.io/hugo_blog/posts/</link>
     <description>Recent content in Posts on Sean&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Sun, 28 May 2017 20:25:34 +0800</lastBuildDate>
     
-	<atom:link href="https://seanguo.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://seanguo.github.io/hugo_blog/posts/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Shell&#43;Ruby</title>
-      <link>https://seanguo.github.io/posts/2017-05-28-shell-plus-ruby/</link>
+      <link>https://seanguo.github.io/hugo_blog/posts/2017-05-28-shell-plus-ruby/</link>
       <pubDate>Sun, 28 May 2017 20:25:34 +0800</pubDate>
       
-      <guid>https://seanguo.github.io/posts/2017-05-28-shell-plus-ruby/</guid>
+      <guid>https://seanguo.github.io/hugo_blog/posts/2017-05-28-shell-plus-ruby/</guid>
       <description>最近公司产品的新特性开发的不是那么多了，所以自己有时间闲下来偿还一下以前欠下的技术债。公司的发版流程是自己一步步实现出来的，整体结构是由一个个的shell脚本来实现的。把发版的每一个步骤拆分为独立的一个个脚本，这样流程变化了可以通过脚本组合的变化来适应变化。毕竟能够维持不变的东西永远是变化。
 以前的问题是由于当时开发的紧迫性，加上自己对脚本的不太重视，导致开发的这些脚本整体结构还算好，但是就是里面会有很多重复的常量在里面。这里的常量就是要发版的各个组件的名字，由于目前产品组件的不确定性，经常会添加或者删除一个组件，目前的缺点就是添加或者删除一个组件的时候需要更改多个脚本，违背了SPOT原则，会很容易遗落下本应同步修改的脚本。
 这次自己有时间了决定把这些常量提取出去作为一个配置文件单独存在，思路是简单而直接的，但是由于shell脚本的局限性，把组件名字提出去还算可行，但是我想要对每个组件加上单独的其他配置的话好像比较绕。以以下脚本为例来说： {% codeblock lang:bash%} for repo in &amp;ldquo;COM_A COM_B COM_C&amp;rdquo; do cd $repo if [ $repo == &amp;ldquo;COM_B&amp;rdquo; cd modules fi mvn setVersion=$newVersion done {% endcodeblock %} 这个脚本是迭代每个组件，然后去修改pom.xml里面的version改为要发版的version，问题有的组件的parent的pom.xml没在根目录下，需要切换到对应的目录才能进行操作。
@@ -26,10 +26,10 @@
     
     <item>
       <title>SIP Headers</title>
-      <link>https://seanguo.github.io/posts/2017-04-23-sip-headers/</link>
+      <link>https://seanguo.github.io/hugo_blog/posts/2017-04-23-sip-headers/</link>
       <pubDate>Sun, 23 Apr 2017 19:45:06 +0800</pubDate>
       
-      <guid>https://seanguo.github.io/posts/2017-04-23-sip-headers/</guid>
+      <guid>https://seanguo.github.io/hugo_blog/posts/2017-04-23-sip-headers/</guid>
       <description>##引言 SIP协议的设计很多参考了已有的HTTP协议，例如都是用的文本，验证用户相关的header和content-type和body的设计。这里主要说一下SIP独有的这些header，其中对路由相关的header又是重点要说的。
 ##From和To 这两个header是作为标识存在的，对协议本身的路由来说不起什么作用。在实际电话呼叫中会标识主叫方和被叫方。其中的tag参数被选用来标识session。除了这两个tag参数外，session的标识还要用到另外一个header： Call-ID的值。下面是RFC3261里面的一个例子： {% codeblock %} From: &amp;ldquo;Bob&amp;rdquo; sips:bob@biloxi.com ;tag=a48s From: sip:+12125551212@phone2net.com;tag=887s From: Anonymous sip:c8oqz84zk7z@privacy.org;tag=hyh8
 To: Carol sip:carol@chicago.com {% endcodeblock %} 可以看到这两个header里可以包含一个用来描述这个URI的display name。在呼叫中这个就会用来标识呼叫的主被叫的名字。
@@ -43,10 +43,10 @@ Via里面还有个重要的参数branch来标示这个request对应的transactio
     
     <item>
       <title>Vagrant&#43;Chef</title>
-      <link>https://seanguo.github.io/posts/2017-03-12-vagrant-plus-chef/</link>
+      <link>https://seanguo.github.io/hugo_blog/posts/2017-03-12-vagrant-plus-chef/</link>
       <pubDate>Sun, 12 Mar 2017 19:32:51 +0800</pubDate>
       
-      <guid>https://seanguo.github.io/posts/2017-03-12-vagrant-plus-chef/</guid>
+      <guid>https://seanguo.github.io/hugo_blog/posts/2017-03-12-vagrant-plus-chef/</guid>
       <description>##引言
 前面我介绍了Chef的环境搭建和简单的cookbook的创建执行，也介绍了如果用Vagrant来快速搭建一台虚拟机。但是所有的东西都停留在hello world的阶段，这篇文章就是结合这两个生产力工具来搭建一组可以实际使用用来做rails开发的server。
 ##Chef Provisioning 我们知道Vagrant包含多种不同类型的provisioner，而Chef就是其中内置的一种，所以我们是可以直接使用的。这里我们用到的是chef_solo, Chef Solo是Chef Client的单机版，运行不依赖于Chef Server。
@@ -61,10 +61,10 @@ cookbook &amp;lsquo;rails&amp;rsquo;, &amp;lsquo;~&amp;gt; 0.9.2&amp;rsquo; {% e
     
     <item>
       <title>Chef 介绍 Part1 Setup</title>
-      <link>https://seanguo.github.io/posts/2017-02-17-chefjie-shao/</link>
+      <link>https://seanguo.github.io/hugo_blog/posts/2017-02-17-chefjie-shao/</link>
       <pubDate>Fri, 17 Feb 2017 20:20:59 +0800</pubDate>
       
-      <guid>https://seanguo.github.io/posts/2017-02-17-chefjie-shao/</guid>
+      <guid>https://seanguo.github.io/hugo_blog/posts/2017-02-17-chefjie-shao/</guid>
       <description>引言 Chef是一个自动化部署的工具。它的思想是“Infrastructure as code”, 所以整个DevOps流程下来都是代码，都可以保存在代码仓库里面。像Chef之类的工具出现之前，简单部署的话就是手工来了，像Java的web应用手工部署个War包或者改个配置文件什么的，高级点的可能会写个shell脚本来自动化。但是当需要管理的机器增多或者配置项增多，或者不同的机器要求不一样的配置的话，就力不从心了。Chef出现之后，这样的难题就迎刃而解了。
 Chef的实现是用的Ruby，所以它的配置脚本也是基于Ruby的, 所以想要学好Chef也需要了解一下Ruby的基本语法，如果想要扩展，定制，增加自己的Chef库的话，还是需要仔细学习一下Ruby才行。这导致Chef陡峭的学习曲线，了解个皮毛很容易，但是想要深入了解，诊断问题的话需要做很多功课才可以。
 想要学好，我们先搭环境，在应用中学习是最有成效的。
@@ -78,10 +78,10 @@ file &amp;#39;/tmp/test.txt&amp;#39; do content &amp;#39;This is myfirst sample&
     
     <item>
       <title>如何构建黑苹果(Hackintosh)</title>
-      <link>https://seanguo.github.io/posts/2017-01-17-ru-he-gou-jian-hei-ping-guo-hackintosh/</link>
+      <link>https://seanguo.github.io/hugo_blog/posts/2017-01-17-ru-he-gou-jian-hei-ping-guo-hackintosh/</link>
       <pubDate>Tue, 17 Jan 2017 20:55:12 +0800</pubDate>
       
-      <guid>https://seanguo.github.io/posts/2017-01-17-ru-he-gou-jian-hei-ping-guo-hackintosh/</guid>
+      <guid>https://seanguo.github.io/hugo_blog/posts/2017-01-17-ru-he-gou-jian-hei-ping-guo-hackintosh/</guid>
       <description>引言 上大学的时候就想在PC上装个Mac操作系统来玩玩，因为已经观看了Windows安装的进度条多次，现在想要看看Mac怎么样。记得当时是想在虚拟机里装个Mac系统，但是停留在设置系统的部分，因为系统不能识别鼠标和键盘，只能作罢。 上次的尝试是自己的新PC刚组装好的时候，这次已经掌握了Google，知道了这个东西叫Hackintosh，上各大论坛搜索相关的资料和安装教程，这次再次以失败告终，这次停在了安装时候的crash。 最近晚上又有一些闲工夫，看到了tonyMacX86里居然说已经有我的显卡GTX970的官方驱动了，所以再一次走进这个坑，皇天不负有心人，铁杵终能磨成针，这一次终于安装好了。下面就是这次我的安装历程，不算一个教程，因为那个论坛里的教程已经非常好了。
 安装前 这个就是我当初跟随的教程。它这个也是分为三个阶段来讲述的，需要用到一些工具，这些工具这个论坛也提供了下载，但是要注册登录后才可以。黑苹果的设置安装过程中会用到Mac，所以你手头必须有个Mac才行。
 第一步 它的第一步是下载这个最新的Mac Sierra系统，我这在公司的Mac上已经下载好了但是由于怕搞坏我本机的开发环境一直没敢升级。默认升级后会问你是不是要删掉这个下载好的安装程序。
@@ -95,10 +95,10 @@ Update to High Serria  Foollowing guide in https://www.tonymacx86.com/threads/up
     
     <item>
       <title>Vagrant 入门</title>
-      <link>https://seanguo.github.io/posts/2016-11-16-vagrant-ru-men/</link>
+      <link>https://seanguo.github.io/hugo_blog/posts/2016-11-16-vagrant-ru-men/</link>
       <pubDate>Wed, 16 Nov 2016 11:48:43 +0800</pubDate>
       
-      <guid>https://seanguo.github.io/posts/2016-11-16-vagrant-ru-men/</guid>
+      <guid>https://seanguo.github.io/hugo_blog/posts/2016-11-16-vagrant-ru-men/</guid>
       <description>##介绍 Vagrant是一个虚拟机管理工具，通过它你可以用几个简单的命令快速搭建一个配置好的虚拟机环境。它提供了多种虚拟机provider所以你可以用同一个设置文件去驱动设置不同的虚拟机。
 它的核心文件叫做Vagrantfile，所有的虚拟机的配置都是在这里。我们可以在里面定义各个provider的配置，如果去用provisioner去设置虚拟机，安装应用程序。有了这个配置文件，你就可以很方便的快速重复构建一个测试环境。这让Docker出现之前成为了开发员很热衷的一个环境设置工具。 我这篇文章将会一步一步来搭建一个测试环境。这样从头来讲解Vagrant的基本使用方法，希望可以帮到那些想要学习Vagrant的人。
 ##初始设置 首先你需要去下载适合你操作系统的Vagrant安装包。安装完之后我们还需要安装VirtualBox来作为演示用的provider。因为Virtualbox是Vagrant的provider，当然当你熟悉Vagrant之后可以通过修改全局的配置文件来修改默认的provider。一切都安装好了之后我们需要打开一个shell窗口，新建一个文件夹作为这次演示用的。 {% codeblock lang:bash%} mkdir vagrant_leanring cd vagrant_leanring vagrant init {% endcodeblock %} 这里用到了第一个命令 vagrant init 这个命令会在当然目录生成如下这样的一个Vagrantfile，我们可以以这个为模板来修改运行我们自己的演示。 {% codeblock lang:ruby%}
@@ -107,10 +107,10 @@ Update to High Serria  Foollowing guide in https://www.tonymacx86.com/threads/up
     
     <item>
       <title>itunes的备份之后的文件在哪儿</title>
-      <link>https://seanguo.github.io/posts/2013-11-27-itunes-backup-location/</link>
+      <link>https://seanguo.github.io/hugo_blog/posts/2013-11-27-itunes-backup-location/</link>
       <pubDate>Wed, 27 Nov 2013 19:46:51 +0800</pubDate>
       
-      <guid>https://seanguo.github.io/posts/2013-11-27-itunes-backup-location/</guid>
+      <guid>https://seanguo.github.io/hugo_blog/posts/2013-11-27-itunes-backup-location/</guid>
       <description> Windows 7的在 C:/Users/[用户名]/AppData/Roaming/Apple Computer/MobileSync/Backup/
  Windows XP: C:/Documents and Settings(用户名)/Application Data/Apple Computer/MobileSync/Backup
  Mac 中：~/Library/Application Support/MobileSync/Backup
@@ -119,10 +119,10 @@ Update to High Serria  Foollowing guide in https://www.tonymacx86.com/threads/up
     
     <item>
       <title>NoSql database compare</title>
-      <link>https://seanguo.github.io/posts/2013-11-27-nosql-database-compare/</link>
+      <link>https://seanguo.github.io/hugo_blog/posts/2013-11-27-nosql-database-compare/</link>
       <pubDate>Wed, 27 Nov 2013 16:47:57 +0800</pubDate>
       
-      <guid>https://seanguo.github.io/posts/2013-11-27-nosql-database-compare/</guid>
+      <guid>https://seanguo.github.io/hugo_blog/posts/2013-11-27-nosql-database-compare/</guid>
       <description>##Introduction
 The goal of this article is trying compare the popular NoSql databases and choose one for one of our company&amp;rsquo;s product. It was based on SQL database but suffering from low scalibility and performance. So we want to migrate to NoSQL based product. Since Most of the NoSQL database are of high scalibility and performance under some condition.
 Before that we need to know some of the backgournd knowlege. Currently there are two kind of data store model:</description>
@@ -130,19 +130,19 @@ Before that we need to know some of the backgournd knowlege. Currently there are
     
     <item>
       <title>My Ruby learning</title>
-      <link>https://seanguo.github.io/posts/2013-11-27-my-ruby-learning/</link>
+      <link>https://seanguo.github.io/hugo_blog/posts/2013-11-27-my-ruby-learning/</link>
       <pubDate>Wed, 27 Nov 2013 09:39:36 +0800</pubDate>
       
-      <guid>https://seanguo.github.io/posts/2013-11-27-my-ruby-learning/</guid>
+      <guid>https://seanguo.github.io/hugo_blog/posts/2013-11-27-my-ruby-learning/</guid>
       <description>{% codeblock Output something lang:ruby%} puts File.exists?(&amp;ldquo;/Users/sean/Desktop/test.rb&amp;rdquo;) {% endcodeblock %}</description>
     </item>
     
     <item>
       <title>Materials to learn Chef</title>
-      <link>https://seanguo.github.io/posts/2013-11-26-materials-to-learn-chef/</link>
+      <link>https://seanguo.github.io/hugo_blog/posts/2013-11-26-materials-to-learn-chef/</link>
       <pubDate>Tue, 26 Nov 2013 20:57:31 +0800</pubDate>
       
-      <guid>https://seanguo.github.io/posts/2013-11-26-materials-to-learn-chef/</guid>
+      <guid>https://seanguo.github.io/hugo_blog/posts/2013-11-26-materials-to-learn-chef/</guid>
       <description>##Setup: ###Develop tool: * Vagrant Setup: http://docs.vagrantup.com/v2/vagrantfile/vagrant_settings.html
  Get started guide: http://vialstudios.com/guide-authoring-cookbooks.html
  Another: http://misheska.com/blog/2013/06/16/getting-started-writing-chef-cookbooks-the-berkshelf-way/
@@ -154,10 +154,10 @@ Before that we need to know some of the backgournd knowlege. Currently there are
     
     <item>
       <title>Hello World</title>
-      <link>https://seanguo.github.io/posts/2013-11-26-hello-world/</link>
+      <link>https://seanguo.github.io/hugo_blog/posts/2013-11-26-hello-world/</link>
       <pubDate>Tue, 26 Nov 2013 15:42:16 +0800</pubDate>
       
-      <guid>https://seanguo.github.io/posts/2013-11-26-hello-world/</guid>
+      <guid>https://seanguo.github.io/hugo_blog/posts/2013-11-26-hello-world/</guid>
       <description>Thanks http://zerodie.github.io/blog/2012/01/19/octopress-github-pages/ I got this blog system working.</description>
     </item>
     

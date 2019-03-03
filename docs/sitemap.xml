@@ -3,84 +3,84 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://seanguo.github.io/posts/2017-05-28-shell-plus-ruby/</loc>
+    <loc>https://seanguo.github.io/hugo_blog/posts/2017-05-28-shell-plus-ruby/</loc>
     <lastmod>2017-05-28T20:25:34+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://seanguo.github.io/posts/2017-04-23-sip-headers/</loc>
+    <loc>https://seanguo.github.io/hugo_blog/posts/2017-04-23-sip-headers/</loc>
     <lastmod>2017-04-23T19:45:06+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://seanguo.github.io/posts/2017-03-12-vagrant-plus-chef/</loc>
+    <loc>https://seanguo.github.io/hugo_blog/posts/2017-03-12-vagrant-plus-chef/</loc>
     <lastmod>2017-03-12T19:32:51+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://seanguo.github.io/posts/2017-02-17-chefjie-shao/</loc>
+    <loc>https://seanguo.github.io/hugo_blog/posts/2017-02-17-chefjie-shao/</loc>
     <lastmod>2017-02-17T20:20:59+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://seanguo.github.io/posts/2017-01-17-ru-he-gou-jian-hei-ping-guo-hackintosh/</loc>
+    <loc>https://seanguo.github.io/hugo_blog/posts/2017-01-17-ru-he-gou-jian-hei-ping-guo-hackintosh/</loc>
     <lastmod>2017-01-17T20:55:12+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://seanguo.github.io/posts/2016-11-16-vagrant-ru-men/</loc>
+    <loc>https://seanguo.github.io/hugo_blog/posts/2016-11-16-vagrant-ru-men/</loc>
     <lastmod>2016-11-16T11:48:43+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://seanguo.github.io/posts/2013-11-27-itunes-backup-location/</loc>
+    <loc>https://seanguo.github.io/hugo_blog/posts/2013-11-27-itunes-backup-location/</loc>
     <lastmod>2013-11-27T19:46:51+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://seanguo.github.io/posts/2013-11-27-nosql-database-compare/</loc>
+    <loc>https://seanguo.github.io/hugo_blog/posts/2013-11-27-nosql-database-compare/</loc>
     <lastmod>2013-11-27T16:47:57+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://seanguo.github.io/posts/2013-11-27-my-ruby-learning/</loc>
+    <loc>https://seanguo.github.io/hugo_blog/posts/2013-11-27-my-ruby-learning/</loc>
     <lastmod>2013-11-27T09:39:36+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://seanguo.github.io/posts/2013-11-26-materials-to-learn-chef/</loc>
+    <loc>https://seanguo.github.io/hugo_blog/posts/2013-11-26-materials-to-learn-chef/</loc>
     <lastmod>2013-11-26T20:57:31+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://seanguo.github.io/posts/2013-11-26-hello-world/</loc>
+    <loc>https://seanguo.github.io/hugo_blog/posts/2013-11-26-hello-world/</loc>
     <lastmod>2013-11-26T15:42:16+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://seanguo.github.io/categories/</loc>
+    <loc>https://seanguo.github.io/hugo_blog/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://seanguo.github.io/posts/</loc>
+    <loc>https://seanguo.github.io/hugo_blog/posts/</loc>
     <lastmod>2017-05-28T20:25:34+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://seanguo.github.io/</loc>
+    <loc>https://seanguo.github.io/hugo_blog/</loc>
     <lastmod>2017-05-28T20:25:34+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://seanguo.github.io/tags/</loc>
+    <loc>https://seanguo.github.io/hugo_blog/tags/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://seanguo.github.io/about/</loc>
+    <loc>https://seanguo.github.io/hugo_blog/about/</loc>
   </url>
   
 </urlset>
